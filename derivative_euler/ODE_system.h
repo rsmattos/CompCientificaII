@@ -14,9 +14,15 @@ class ODE_solver{
         double * der_u_;
         int dim_;
         fptr system_;
+
     public:
         // constructor
-        ODE_solver(double t = 0.0, double t_limit = 10., double step = 0.01, int N = 2){
+        ODE_solver(){
+            u_ = new double;
+            der_u_ = new double;
+        }
+
+        ODE_solver(double t, double t_limit, double step, int N){
             dim_ = N;
             u_ = new double[N];
             der_u_ = new double[N];
