@@ -63,7 +63,7 @@ class ODE_solver{
 inline void ODE_solver::forward_euler_step(){
     int i;
 
-    system_;
+    system_(u_, der_u_, time_);
 
     for(i = 0; i < dim_; i++){
         u_[i] += step_size_*der_u_[i];
