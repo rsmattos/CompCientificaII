@@ -84,6 +84,6 @@ void feuler(){
         }
     }
 
-
+    delete[] params;
     delete[] vars;
 }
