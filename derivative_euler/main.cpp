@@ -21,32 +21,91 @@ struct ODE_set{
 
 // my headers
 #include "ODE_solver.h"
-// #include "forward_euler.h"
-// #include "backward_euler.h"
 #include "functions_bank.h"
 #include "solver.h"
 
 int main(){
     struct ODE_set set;
 
+    // exemplo 1
+    // adiantado
     set.initial = 0.;
-    set.final = 10.;
+    set.final = 5.;
     set.step = .1;
     set.dimension = 1;
     set.method = "forward";
-    set.outfile = "./OUTPUT/exponential1.csv";
-    set.function = &exponential1D;
+    set.outfile = "./OUTPUT/exemplo_1_adiantado.csv";
+    set.function = &exemplo_1;
 
     double *u = new double[set.dimension];
     double *du = new double[set.dimension];
 
-    u[0] = 1;  u[1] = 1;
-    du[0] = 1; du[1] = 1;
+    u[0] = 1;
+    // du[0] = 1;
+
+    solver_to_file(set, u, du);
+
+    // atrasado
+    set.method = "backward";
+    set.outfile = "./OUTPUT/exemplo_1_atrasado.csv";
+
+    solver_to_file(set, u, du);
+//-----------------------------------------------------------
+    // exemplo 2
+    // adiantado
+    set.method = "forward";
+    set.outfile = "./OUTPUT/exemplo_2_adiantado.csv";
+    set.function = &exemplo_2;
+
+    solver_to_file(set, u, du);
+
+    // atrasado
+    set.method = "backward";
+    set.outfile = "./OUTPUT/exemplo_2_atrasado.csv";
+
+    solver_to_file(set, u, du);
+//------------------------------------------------------------
+    // exemplo 3
+    // adiantado
+    set.final = 7.;
+    set.method = "forward";
+    set.outfile = "./OUTPUT/exemplo_3_adiantado.csv";
+    set.function = &exemplo_3;
+
+    solver_to_file(set, u, du);
+
+    // atrasado
+    set.method = "backward";
+    set.outfile = "./OUTPUT/exemplo_3_atrasado.csv";
 
     solver_to_file(set, u, du);
 
     delete[] u;
     delete[] du;
+//-------------------------------------------------------------
+    // exemplo 3
+    // adiantado
+    set.dimension = 2;
+    set.method = "forward";
+    set.outfile = "./OUTPUT/VanDerPol_adiantado.csv";
+    set.function = &VanDerPol;
+
+    double *v = new double[set.dimension];
+    double *dv = new double[set.dimension];
+
+    v[0] = 1.; v[1] = 0.;
+
+    solver_to_file(set, v, dv);
+
+    // atrasado
+    set.method = "backward";
+    set.outfile = "./OUTPUT/VanDerPol_atrasado.csv";
+
+    solver_to_file(set, v, dv);
+
+    delete[] v;
+    delete[] dv;
+//-------------------------------------------------------------
     
     return 0;
 }

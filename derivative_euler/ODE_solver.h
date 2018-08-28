@@ -16,12 +16,13 @@ class ODE_solver{
         double * u_;
         double * der_u_;
         double * old_u_, * new_u_;       // forward
-        double * cn_der_u_;               // cn
+        double * extra_der_u_;               // cn e huen
         int dim_;
         fptr system_;
+        int loop_counter_;
 
     public:
-        // constructor
+        // constructors
         ODE_solver(int N){
             dim_ = N;
             u_ = new double[N];
@@ -60,19 +61,23 @@ class ODE_solver{
         void set_cn(){
             set_backward();
 
-            cn_der_u_ = new double[dim_];
+            extra_der_u_ = new double[dim_];
 
             method[1] = 1;
         }
 
         void set_huen(){
+            extra_der_u_ = new double[dim_];
+
             method[2] = 1;
         }
 
         // set parameters
         void initial_values(double *u, double *du){
-            u_ = u;
-            der_u_ = du;
+            for(i_ = 0; i_ < dim_; i_++){
+                u_[i_] = u[i_];
+                der_u_[i_] = du[i_];
+            }
         }
 
         void set_system(fptr func){
@@ -137,11 +142,11 @@ class ODE_solver{
             }
 
             if(method[1] == 1){
-                delete[] cn_der_u_;
+                delete[] extra_der_u_;
             }
 
             if(method[2] == 1){
-                
+                delete[] extra_der_u_;
             }
         }
 };
@@ -171,6 +176,8 @@ double distance(double *u, double *v, int dim){
 inline void ODE_solver::backward_euler_step(){
     time_ = time_ + step_size_;
 
+    loop_counter_ = 0;
+
     for(i_ = 0; i_ < dim_; i_++){
         old_u_[i_] = u_[i_];
     }
@@ -186,6 +193,10 @@ inline void ODE_solver::backward_euler_step(){
             u_[i_] = old_u_[i_] + step_size_*der_u_[i_];
         }
 
+        loop_counter_++;
+
+        if(loop_counter_ > 20){break;}
+
     }while(distance(u_, new_u_, dim_) > .001*step_size_);
         
     step_counter_++;
@@ -193,19 +204,32 @@ inline void ODE_solver::backward_euler_step(){
 
 inline void ODE_solver::cn_step(){
     // calculate fn
-    system_(u_, cn_der_u_, time_);
+    system_(u_, extra_der_u_, time_);
 
     // calculate fn+i, already atualizes the steo counter and time
     backward_euler_step();
 
     // calculate the cn step
     for(i_ = 0; i_ < dim_; i_++){
-        u_[i_] = old_u_[i_] + step_size_*(cn_der_u_[i_] + der_u_[i_]) / 2.;
+        u_[i_] = old_u_[i_] + step_size_*(extra_der_u_[i_] + der_u_[i_]) / 2.;
     }
 }
 
 inline void ODE_solver::huen_step(){
-    
+    // calculate fn
+    system_(u_, extra_der_u_, time_);
+
+    // calculate fn+1
+    time_ = time_ + step_size_;
+
+    system_(u_, der_u_, time_);
+
+    // calculate huen step
+    for(i_ = 0; i_ < dim_; i_++){
+        u_[i_] = u_[i_] + step_size_*(extra_der_u_[i_] + der_u_[i_]) / 2.;
+    }
+
+    step_counter_++;
 }
 
 

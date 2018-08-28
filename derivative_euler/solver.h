@@ -34,6 +34,7 @@ void solver_to_screen(struct ODE_set &set, double *u, double *du){
 
     if(set.method == "huen"){
         solver.set_huen();
+        
         while(solver.t() < solver.t_limit()){
             solver.huen_step();
             solver.print_system();
