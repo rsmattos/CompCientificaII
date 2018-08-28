@@ -25,6 +25,14 @@ class ODE_solver{
             step_counter_ = 0;
         }
 
+        ODE_solver(int N){
+            dim_ = N;
+            u_ = new double[N];
+            der_u_ = new double[N];
+
+            step_counter_ = 0;
+        }
+
         ODE_solver(double t, double t_limit, double step, int N){
             dim_ = N;
             u_ = new double[N];
@@ -53,7 +61,10 @@ class ODE_solver{
             step_counter_ = 0;
         }
 
+        // solvers
         void forward_euler_step();
+
+        void backward_euler_step();
 
         // return values
         double h(){return step_size_;}
@@ -71,6 +82,12 @@ class ODE_solver{
         void print_system(double);
 
         void print_in_step(int);
+
+        void format_CVS_print_system();
+
+        void format_CVS_print_system(double);
+
+        void format_CVS_print_in_step(int);
 
         // destructor
         ~ODE_solver(){
@@ -92,8 +109,49 @@ inline void ODE_solver::forward_euler_step(){
     step_counter_++;
 }
 
-inline void ODE_solver::print_system(){
+double distance(double *u, double *v, int dim){
     int i;
+    double sum = 0;
+
+    for(i = 0; i < dim; i++){
+        sum += (u[i] - v[i])*(u[i] - v[i]);
+    }
+
+    return sum;
+}
+
+inline void ODE_solver::backward_euler_step(){
+    int i;
+    double * old_u_ = new double[dim_];
+    double * new_u_ = new double[dim_];
+
+    time_ = time_ + step_size_;
+
+    for(i = 0; i < dim_; i++){
+        old_u_[i] = u_[i];
+    }
+
+    do{
+        for(i = 0; i < dim_; i++){
+            new_u_[i] = u_[i];
+        }
+
+        system_(u_, der_u_, time_);
+
+        for(i = 0; i < dim_; i++){
+            u_[i] = old_u_[i] + step_size_*der_u_[i];
+        }
+
+    }while(distance(u_, new_u_, dim_) > .001*step_size_);
+        
+    step_counter_++;
+
+    delete[] old_u_;
+    delete[] new_u_;
+}
+
+inline void ODE_solver::print_system(){
+    int i; 
 
     std::cout << "t = " << time_;
     for(i = 0; i < dim_; i++){
@@ -113,5 +171,29 @@ inline void ODE_solver::print_system(double t){
 inline void ODE_solver::print_in_step(int step){
     if( (step_counter_ % step) == 0){
         print_system();
+    }
+}
+
+inline void ODE_solver::format_CVS_print_system(){
+    int i; 
+
+    std::cout << "t = " << time_;
+    for(i = 0; i < dim_; i++){
+        std::cout << i << "," << u_[i] << "," << i << "," << der_u_[i]; 
+    }
+    std::cout << std::endl;
+}
+
+inline void ODE_solver::format_CVS_print_system(double t){
+    int i;
+
+    if( remainder(time_, t) < 1.e-5){
+        format_CVS_print_system();
+    }
+}
+
+inline void ODE_solver::format_CVS_print_in_step(int step){
+    if( (step_counter_ % step) == 0){
+        format_CVS_print_system();
     }
 }
