@@ -6,6 +6,8 @@ class ODE_solver{
         double t_limit_;
         double step_size_;
         int step_counter_;
+        int method[3];
+        int i_;
 
         // function pointer to the functions being avaliated
         typedef void (*fptr)(double *u, double *du, double t);
@@ -13,24 +15,23 @@ class ODE_solver{
         // variables
         double * u_;
         double * der_u_;
+        double * old_u_, * new_u_;       // forward
+        double * cn_der_u_;               // cn
         int dim_;
         fptr system_;
 
     public:
         // constructor
-        ODE_solver(){
-            u_ = new double;
-            der_u_ = new double;
-
-            step_counter_ = 0;
-        }
-
         ODE_solver(int N){
             dim_ = N;
             u_ = new double[N];
             der_u_ = new double[N];
 
             step_counter_ = 0;
+
+            method[0] = 0;                // Backward
+            method[1] = 0;                // CN
+            method[2] = 0;                // Huen
         }
 
         ODE_solver(double t, double t_limit, double step, int N){
@@ -38,12 +39,36 @@ class ODE_solver{
             u_ = new double[N];
             der_u_ = new double[N];
 
+            step_counter_ = 0;
+
+            method[0] = 0;                // Backward
+            method[1] = 0;                // CN
+            method[2] = 0;                // Huen
+
             time_ = t;
             t_limit_ = t_limit - step;
             step_size_ = step;
-            step_counter_ = 0;
         }
-        
+
+        void set_backward(){
+            old_u_ = new double[dim_];
+            new_u_ = new double[dim_];
+
+            method[0] = 1;
+        }
+
+        void set_cn(){
+            set_backward();
+
+            cn_der_u_ = new double[dim_];
+
+            method[1] = 1;
+        }
+
+        void set_huen(){
+            method[2] = 1;
+        }
+
         // set parameters
         void initial_values(double *u, double *du){
             u_ = u;
@@ -61,10 +86,21 @@ class ODE_solver{
             step_counter_ = 0;
         }
 
+        void set_time(struct ODE_set &set){
+            time_ = set.initial;
+            t_limit_ = set.final - set.step;
+            step_size_ = set.step;
+            step_counter_ = 0;
+        }
+
         // solvers
         void forward_euler_step();
 
         void backward_euler_step();
+
+        void cn_step();
+
+        void huen_step();
 
         // return values
         double h(){return step_size_;}
@@ -77,6 +113,7 @@ class ODE_solver{
 
         int step_counter(){return step_counter_;}
 
+        // functions to print variables
         void print_system();
 
         void print_in_time(double);
@@ -93,16 +130,27 @@ class ODE_solver{
         ~ODE_solver(){
             delete[] u_;
             delete[] der_u_;
+
+            if(method[0] == 1){
+                delete[] old_u_;
+                delete[] new_u_;
+            }
+
+            if(method[1] == 1){
+                delete[] cn_der_u_;
+            }
+
+            if(method[2] == 1){
+                
+            }
         }
 };
 
 inline void ODE_solver::forward_euler_step(){
-    int i;
-
     system_(u_, der_u_, time_);
 
-    for(i = 0; i < dim_; i++){
-        u_[i] += step_size_*der_u_[i];
+    for(i_ = 0; i_ < dim_; i_++){
+        u_[i_] += step_size_*der_u_[i_];
     }
 
     time_ = time_ + step_size_;
@@ -121,48 +169,55 @@ double distance(double *u, double *v, int dim){
 }
 
 inline void ODE_solver::backward_euler_step(){
-    int i;
-    double * old_u_ = new double[dim_];
-    double * new_u_ = new double[dim_];
-
     time_ = time_ + step_size_;
 
-    for(i = 0; i < dim_; i++){
-        old_u_[i] = u_[i];
+    for(i_ = 0; i_ < dim_; i_++){
+        old_u_[i_] = u_[i_];
     }
 
     do{
-        for(i = 0; i < dim_; i++){
-            new_u_[i] = u_[i];
+        for(i_ = 0; i_ < dim_; i_++){
+            new_u_[i_] = u_[i_];
         }
 
         system_(u_, der_u_, time_);
 
-        for(i = 0; i < dim_; i++){
-            u_[i] = old_u_[i] + step_size_*der_u_[i];
+        for(i_ = 0; i_ < dim_; i_++){
+            u_[i_] = old_u_[i_] + step_size_*der_u_[i_];
         }
 
     }while(distance(u_, new_u_, dim_) > .001*step_size_);
         
     step_counter_++;
-
-    delete[] old_u_;
-    delete[] new_u_;
 }
 
-inline void ODE_solver::print_system(){
-    int i; 
+inline void ODE_solver::cn_step(){
+    // calculate fn
+    system_(u_, cn_der_u_, time_);
 
+    // calculate fn+i, already atualizes the steo counter and time
+    backward_euler_step();
+
+    // calculate the cn step
+    for(i_ = 0; i_ < dim_; i_++){
+        u_[i_] = old_u_[i_] + step_size_*(cn_der_u_[i_] + der_u_[i_]) / 2.;
+    }
+}
+
+inline void ODE_solver::huen_step(){
+    
+}
+
+
+inline void ODE_solver::print_system(){
     std::cout << "t = " << time_;
-    for(i = 0; i < dim_; i++){
-        std::cout << " u[" << i << "] = " << u_[i] << " du[" << i << "] = " << der_u_[i]; 
+    for(i_ = 0; i_ < dim_; i_++){
+        std::cout << " u[" << i_ << "] = " << u_[i_]; 
     }
     std::cout << std::endl;
 }
 
 inline void ODE_solver::print_in_time(double t){
-    int i;
-
     if( remainder(time_, t) < 1.e-5){
         print_system();
     }
@@ -175,18 +230,14 @@ inline void ODE_solver::print_in_step(int step){
 }
 
 inline void ODE_solver::file_CSV_print_system(std::ofstream &output){
-    int i; 
-
     output << time_;
-    for(i = 0; i < dim_; i++){
-        output << "," << u_[i] << "," << der_u_[i]; 
+    for(i_ = 0; i_ < dim_; i_++){
+        output << "," << u_[i_]; 
     }
     output << std::endl;
 }
 
 inline void ODE_solver::file_CSV_print_in_time(double t,std::ofstream &output){
-    int i;
-
     if( remainder(time_, t) < 1.e-5){
         file_CSV_print_system(output);
     }

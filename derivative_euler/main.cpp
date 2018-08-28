@@ -3,35 +3,47 @@
 #include <iostream>
 #include <cmath>
 #include <fstream>
+#include <cstring>
+#include <functional>
+
+typedef void (*func)(double *u, double *du, double t);
+
+struct ODE_set{
+    double initial;
+    double final;
+    double step;
+    int dimension;
+
+    std::string method;
+    std::string outfile;
+    func function;
+};
 
 // my headers
 #include "ODE_solver.h"
-#include "forward_euler.h"
-#include "backward_euler.h"
+// #include "forward_euler.h"
+// #include "backward_euler.h"
 #include "functions_bank.h"
+#include "solver.h"
 
 int main(){
-    // declaracao da classe de ODE
-    ODE_solver solver1(2);
+    struct ODE_set set;
 
-    double *u = new double[2];
-    double *du = new double[2];
+    set.initial = 0.;
+    set.final = 10.;
+    set.step = .1;
+    set.dimension = 1;
+    set.method = "forward";
+    set.outfile = "./OUTPUT/exponential1.csv";
+    set.function = &exponential1D;
 
-    u[0] = 1;
-    u[1] = 1;
-    du[0] = 1;
-    du[1] = 1;
-    
-    solver1.initial_values(u, du);
-    solver1.set_time(0., 10., 0.1);
+    double *u = new double[set.dimension];
+    double *du = new double[set.dimension];
 
-    solver1.set_system(exponential2D);
+    u[0] = 1;  u[1] = 1;
+    du[0] = 1; du[1] = 1;
 
-    std::ofstream exponential("./OUTPUT/exponential1.csv");
-
-    forward_euler(solver1, exponential);
-
-    exponential.close();
+    solver_to_file(set, u, du);
 
     delete[] u;
     delete[] du;

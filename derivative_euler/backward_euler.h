@@ -12,7 +12,7 @@ void backward_euler(ODE_solver &solver, std::ofstream &output){
 
     output << "t";
     for(i = 0; i < solver.dim(); i++){
-        output << ",u[" << i << "],du[" << i << "]"; 
+        output << ",u[" << i << "]"; 
     }
     output << std::endl;
 
