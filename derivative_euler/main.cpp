@@ -4,7 +4,6 @@
 #include <cmath>
 #include <fstream>
 #include <cstring>
-#include <functional>
 
 typedef void (*func)(double *u, double *du, double t);
 
