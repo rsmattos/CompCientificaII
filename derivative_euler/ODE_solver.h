@@ -5,6 +5,7 @@ class ODE_solver{
         double time_;
         double t_limit_;
         double step_size_;
+        int step_counter_;
 
         // function pointer to the functions being avaliated
         typedef void (*fptr)(double *u, double *du, double t);
@@ -20,6 +21,8 @@ class ODE_solver{
         ODE_solver(){
             u_ = new double;
             der_u_ = new double;
+
+            step_counter_ = 0;
         }
 
         ODE_solver(double t, double t_limit, double step, int N){
@@ -30,6 +33,7 @@ class ODE_solver{
             time_ = t;
             t_limit_ = t_limit;
             step_size_ = step;
+            step_counter_ = 0;
         }
         
         // set parameters
@@ -46,6 +50,7 @@ class ODE_solver{
             time_ = t;
             t_limit_ = t_limit;
             step_size_ = step;
+            step_counter_ = 0;
         }
 
         void forward_euler_step();
@@ -55,9 +60,17 @@ class ODE_solver{
 
         double t(){return time_;}
 
+        double t_limit(){return t_limit_;}
+
         int dim(){return dim_;}
 
+        int step_counter(){return step_counter_;}
+
         void print_system();
+
+        void print_system(double);
+
+        void print_in_step(int);
 
         // destructor
         ~ODE_solver(){
@@ -76,6 +89,7 @@ inline void ODE_solver::forward_euler_step(){
     }
 
     time_ = time_ + step_size_;
+    step_counter_++;
 }
 
 inline void ODE_solver::print_system(){
@@ -85,5 +99,19 @@ inline void ODE_solver::print_system(){
     for(i = 0; i < dim_; i++){
         std::cout << " u[" << i << "] = " << u_[i] << " du[" << i << "] = " << der_u_[i]; 
     }
-    std::cout << std:: endl;
+    std::cout << std::endl;
+}
+
+inline void ODE_solver::print_system(double t){
+    int i;
+
+    if( remainder(time_, t) < 1.e-5){
+        print_system();
+    }
+}
+
+inline void ODE_solver::print_in_step(int step){
+    if( (step_counter_ % step) == 0){
+        print_system();
+    }
 }
