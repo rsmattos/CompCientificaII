@@ -39,7 +39,7 @@ class ODE_solver{
             der_u_ = new double[N];
 
             time_ = t;
-            t_limit_ = t_limit;
+            t_limit_ = t_limit - step;
             step_size_ = step;
             step_counter_ = 0;
         }
@@ -56,7 +56,7 @@ class ODE_solver{
 
         void set_time(double t = 0.0, double t_limit = 10., double step = 0.01){
             time_ = t;
-            t_limit_ = t_limit;
+            t_limit_ = t_limit - step;
             step_size_ = step;
             step_counter_ = 0;
         }
@@ -79,15 +79,15 @@ class ODE_solver{
 
         void print_system();
 
-        void print_system(double);
+        void print_in_time(double);
 
         void print_in_step(int);
 
-        void format_CVS_print_system();
+        void file_CSV_print_system(std::ofstream&);
 
-        void format_CVS_print_system(double);
+        void file_CSV_print_in_time(double, std::ofstream&);
 
-        void format_CVS_print_in_step(int);
+        void file_CSV_print_in_step(int, std::ofstream&);
 
         // destructor
         ~ODE_solver(){
@@ -160,7 +160,7 @@ inline void ODE_solver::print_system(){
     std::cout << std::endl;
 }
 
-inline void ODE_solver::print_system(double t){
+inline void ODE_solver::print_in_time(double t){
     int i;
 
     if( remainder(time_, t) < 1.e-5){
@@ -174,26 +174,26 @@ inline void ODE_solver::print_in_step(int step){
     }
 }
 
-inline void ODE_solver::format_CVS_print_system(){
+inline void ODE_solver::file_CSV_print_system(std::ofstream &output){
     int i; 
 
-    std::cout << "t = " << time_;
+    output << time_;
     for(i = 0; i < dim_; i++){
-        std::cout << i << "," << u_[i] << "," << i << "," << der_u_[i]; 
+        output << "," << u_[i] << "," << der_u_[i]; 
     }
-    std::cout << std::endl;
+    output << std::endl;
 }
 
-inline void ODE_solver::format_CVS_print_system(double t){
+inline void ODE_solver::file_CSV_print_in_time(double t,std::ofstream &output){
     int i;
 
     if( remainder(time_, t) < 1.e-5){
-        format_CVS_print_system();
+        file_CSV_print_system(output);
     }
 }
 
-inline void ODE_solver::format_CVS_print_in_step(int step){
+inline void ODE_solver::file_CSV_print_in_step(int step,std::ofstream &output){
     if( (step_counter_ % step) == 0){
-        format_CVS_print_system();
+        file_CSV_print_system(output);
     }
 }
