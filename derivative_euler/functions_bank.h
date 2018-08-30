@@ -23,3 +23,9 @@ void VanDerPol(double *u, double *du, double t){
     du[0] = u[1];
     du[1] = -.1*u[1]*(u[0]*u[0] - 1.) - u[0];
 }
+
+void Lorenz(double *u, double *du, double t){
+    du[0] = 10.*(u[1] - u[0]);
+    du[1] = u[0]*(27 - u[2]) - u[1];
+    du[2] = u[0]*u[1] - 8.*u[2]/3.;
+}

@@ -89,22 +89,50 @@ int main(){
     set.outfile = "./OUTPUT/VanDerPol_adiantado.csv";
     set.function = &VanDerPol;
 
-    double *v = new double[set.dimension];
-    double *dv = new double[set.dimension];
+    double *u2 = new double[set.dimension];
+    double *du2 = new double[set.dimension];
 
-    v[0] = 1.; v[1] = 0.;
+    u2[0] = 1.; u2[1] = 0.;
 
-    solver_to_file(set, v, dv);
+    solver_to_file(set, u2, du2);
 
     // atrasado
     set.method = "backward";
     set.outfile = "./OUTPUT/VanDerPol_atrasado.csv";
 
-    solver_to_file(set, v, dv);
+    solver_to_file(set, u2, du2);
 
-    delete[] v;
-    delete[] dv;
+    delete[] u2;
+    delete[] du2;
 //-------------------------------------------------------------
+    // exemplo 4
+    // Crank-Nicolson
+    set.initial = 0.;
+    set.final = 30;
+    set.step = 0.005;
+    set.dimension = 3;
+    set.method = "cn";
+    set.outfile = "./OUTPUT/Lorenz_Crank_Nicolson.csv";
+    set.function = &Lorenz;
+
+    double *u3 = new double[set.dimension];
+    double *du3 = new double[set.dimension];
+
+    u3[0] = 1; u3[1] = 0.; u3[2] = 0.;
+    
+    solver_to_file(set, u3, du3);
+
+    // Huen
+
+    u3[0] = 1; u3[1] = 0.1; u3[2] = 0.1;
+
+    set.method = "huen";
+    set.outfile = "./OUTPUT/Lorenz_Huen.csv";
+
+    solver_to_file(set, u3, du3);
+
+    delete[] u3;
+    delete[] du3;
     
     return 0;
 }
