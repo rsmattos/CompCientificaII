@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <iostream>
+// #include <complex.h>
 #include <complex>
 // #include <gsl/gsl_math.h>
+#include <gsl/gsl_linalg.h>
 #include <gsl/gsl_eigen.h>
 
 int
@@ -32,7 +34,12 @@ main (void)
   gsl_eigen_nonsymmv_sort (eval, evec,
                            GSL_EIGEN_SORT_ABS_DESC);
 
-    std::complex<double> test;
+    // std::complex<double> test[2];
+    std::complex<double> *test;
+    test = new std::complex<double>[2];
+
+    // complex double *evals;
+    // evals = (complex double*)malloc( sizeof(complex double));
     // double complex evals[4];
     // double complex evecs[9]
   {
@@ -47,14 +54,16 @@ main (void)
 
         printf ("eigenvalue = %g + %gi\n",
                 GSL_REAL(eval_i), GSL_IMAG(eval_i));
-        std::real(test) = GSL_REAL(eval_i); std::imag(test) = GSL_IMAG(eval_i);
-        std::cout << test << std::endl;
+        std::real(test[0]) = GSL_REAL(eval_i); std::imag(test[0]) = GSL_IMAG(eval_i);
+        std::cout << test[0] << std::endl;
         printf ("eigenvector = \n");
         for (j = 0; j < 4; ++j)
           {
             gsl_complex z =
               gsl_vector_complex_get(&evec_i.vector, j);
             printf("%g + %gi\n", GSL_REAL(z), GSL_IMAG(z));
+            std::real(test[1]) = GSL_REAL(z); std::imag(test[1]) = GSL_IMAG(z);
+            std::cout << test[1] << std::endl;
           }
       }
   }
