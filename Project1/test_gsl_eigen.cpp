@@ -9,10 +9,14 @@
 int
 main (void)
 {
-  double Matrix[] = { 0.0, 1.0, 0.0, 0.0,
-                      0.0, 0.0, 1.0, 0.0,
-                      0.0, 0.0, 0.0, 1.0,
-                     -5.0, -4.0, -2.0, -1.0 };
+//   double Matrix[] = { 0.0, 1.0, 0.0, 0.0,
+//                       0.0, 0.0, 1.0, 0.0,
+//                       0.0, 0.0, 0.0, 1.0,
+//                      -5.0, -4.0, -2.0, -1.0 };
+  double Matrix[] = { -1.0, 1.0, -1.0, 1.0,
+                    -8.0, 4.0, -2.0, 1.0,
+                    27.0, 9.0, 3.0, 1.0,
+                    64.0, 16.0, 4.0, 1.0 };
 
     // double Defective[] = { -1.0,  0.0,  0.0,
     //                         1.0, -1.0,  0.0,
@@ -97,7 +101,7 @@ main (void)
     std::real(deter) = GSL_REAL(det); std::imag(deter) = GSL_IMAG(det); 
 
     std::cout << deter << std::endl;
-    
+
     for(i=0;i<4;i++){
         for(j=0;j<4;j++){
 
@@ -106,6 +110,8 @@ main (void)
         }
     }
     printf("\n");
+
+    std::cout << 3.15*deter << std::endl;
 
   delete[] test;
   delete[] evals;
