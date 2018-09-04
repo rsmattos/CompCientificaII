@@ -9,10 +9,5 @@
 #include "decomposition.h"
 
 int main(){
-    int Inp_Nequs = 2;
-
-    double Inp_Equs[Inp_Nequs][4];
-
-    double Inp_U0[4];
-
+    sys_solver();
 }
