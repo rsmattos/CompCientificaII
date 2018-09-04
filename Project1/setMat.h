@@ -7,6 +7,8 @@ class MatrixClass{
         int ord_;
         // contant multiplying the Taylor term
         double cons_;
+        // Taylor approximation tolerance
+        double tol_;
 
         // input matrix for the system
         double **Aux_A_;
@@ -21,6 +23,9 @@ class MatrixClass{
         double eval_;
         // exp A matrix
         double **exp_A_;
+        // initial value and answer
+        double *u0_;
+        double *ut_;
 
         // gsl
         double *A_;
@@ -28,41 +33,51 @@ class MatrixClass{
         int i_, j_, k_;
 
     public:
+        // individual steps----------------------------------
         // constructors
-        MatrixClass(int &N);
+        MatrixClass(int N);
 
         // pegar valores de A
         void set_A(double **Mat);
+
+        // determine Taylor convergence limit
+        void set_tol(double tol);
+
+        // initial value for the problem
+        void set_init_value(double *u0);
         
         // inicializar expA
         void init_expA(double t);
-
         void print_expA();
 
         // calculate A^n
         void step_AN();
-
         void print_AN();
 
         // calculate the new Taylor term
         void update_term(double t);
-
         void print_Tay_term();
 
         // calculate Taylor term squared
         void calc_Tay_sqr();
-
         void print_Tay_sqr();
 
         // calculate the highest eigenvalue
         void calc_max_eval();
-
         void print_eval();
-
         double get_eval(){return eval_;}
 
         // adicionar termo ao expA
         void update_expA();
+
+        // calculate the final expA for t
+        void calc_expA(double t);
+
+        // calculate the solution at time t
+        void calc_ut();
+        void calc_ut(double t);
+        void print_ut();
+        void print_ut(double t);
 
         // destructors
         ~MatrixClass(){
@@ -72,6 +87,8 @@ class MatrixClass{
             delete[] Tay_;
             delete[] Tay_sqr_;
             delete[] exp_A_;
+            delete[] u0_;
+            delete[] ut_;
             delete[] A_;
         }
 };
@@ -86,35 +103,7 @@ void init_zero(double **Mat, int &N){
     }
 }
 
-int factorial(int order){
-    int i, result;
-
-    result = 1;
-
-    for(i = 1; i < order; i++){
-        result *= order;
-    }
-    std::cout << "fatorial" << result << std::endl;
-
-    return result;
-}
-
-double potency(double t, int ord){
-    int i, result;
-
-    result = 1;
-
-    for(i = 0; i < ord; i++){
-        result *= t;
-    }
-
-    std::cout << "potency" << result << std::endl;
-
-    return result;
-
-}
-
-inline MatrixClass::MatrixClass(int &N){
+inline MatrixClass::MatrixClass(int N){
     N_ = N;
 
     Aux_A_ = new double*[N];
@@ -146,6 +135,10 @@ inline MatrixClass::MatrixClass(int &N){
     for(i_ = 0; i_ < N; i_++){
         exp_A_[i_] = new double[N];
     }
+    
+    u0_ = new double[N];
+
+    ut_ = new double[N];
 
     // gsl
     A_ = new double[N*N];
@@ -156,6 +149,16 @@ inline void MatrixClass::set_A(double **Mat){
         for(j_ = 0; j_ < N_; j_++){
             Aux_A_[i_][j_] = Mat[i_][j_];
         }
+    }
+}
+
+inline void MatrixClass::set_tol(double tol){
+    tol_ = tol;
+}
+
+inline void MatrixClass::set_init_value(double *u0){
+    for(i_ = 0; i_ < N_; i_++){
+        u0_[i_] = u0[i_];
     }
 }
 
@@ -229,15 +232,8 @@ inline void MatrixClass::update_term(double t){
     // update the order of the approximation
     ord_++;
 
-    std::cout << "ordem da aproximacao" << ord_ << std::endl;
-    // calculate the constant for the new term
-    // cons_ = potency(t,ord_)/(1.*factorial(ord_));
-
+    // update the constant multiplying the matrix
     cons_ *= t/ord_;
-
-    std::cout << "pow" << pow(t,ord_) << std::endl;
-
-    std::cout << "cont Taylor" << cons_ << std::endl;
 
     // calculate the new term
     for(i_ = 0; i_ < N_; i_++){
@@ -311,4 +307,52 @@ inline void MatrixClass::calc_max_eval(){
 
 inline void MatrixClass::print_eval(){
     std::cout << "maximum eigenvalue" << eval_ << std::endl;
+}
+
+inline void MatrixClass::calc_expA(double t){
+    init_expA(t);
+
+    do{
+        step_AN();
+
+        update_term(t);
+
+        update_expA();
+
+        calc_Tay_sqr();
+
+        calc_max_eval();
+    }while(eval_ > tol_);
+}
+
+inline void MatrixClass::calc_ut(){
+    for(i_ = 0; i_ < N_; i_++){
+        ut_[i_] = 0.;
+    }
+
+    for(i_ = 0; i_ < N_; i_++){
+        for(j_ = 0; j_ < N_; j_++){
+            ut_[i_] += exp_A_[i_][j_]*u0_[j_];
+        }
+    }
+}
+
+inline void MatrixClass::calc_ut(double t){
+    calc_expA(t);
+
+    calc_ut();
+}
+
+inline void MatrixClass::print_ut(){
+    for(i_ = 0; i_ < N_; i_++){
+        std::cout << '\t' << ut_[i_];
+    }
+
+    std::cout << std::endl;
+}
+
+inline void MatrixClass::print_ut(double t){
+    std::cout << t;
+
+    print_ut();
 }
