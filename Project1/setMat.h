@@ -78,6 +78,7 @@ class MatrixClass{
         void calc_ut(double t);
         void print_ut();
         void print_ut(double t);
+        void file_CSV_print_system(double t, std::ofstream &output);
 
         // destructors
         ~MatrixClass(){
@@ -355,4 +356,12 @@ inline void MatrixClass::print_ut(double t){
     std::cout << t;
 
     print_ut();
+}
+
+inline void MatrixClass::file_CSV_print_system(double t, std::ofstream &output){
+    output << t;
+    for(i_ = 0; i_ < N_; i_++){
+        output << "," << ut_[i_]; 
+    }
+    output << std::endl;
 }
