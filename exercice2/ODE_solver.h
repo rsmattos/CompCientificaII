@@ -6,7 +6,7 @@ class ODE_solver{
         double t_limit_;
         double step_size_;
         int step_counter_;
-        int method[3];
+        int method[4];
         int i_;
 
         // function pointer to the functions being avaliated
@@ -15,8 +15,11 @@ class ODE_solver{
         // variables
         double * u_;
         double * der_u_;
-        double * old_u_, * new_u_;       // forward
+        double * old_u_, * new_u_;           // forward
         double * extra_der_u_;               // cn e huen
+        double ** kutta_;
+        double rk_error_, rk_tol_;
+        int go_back_;
         int dim_;
         fptr system_;
         int loop_counter_;
@@ -33,6 +36,7 @@ class ODE_solver{
             method[0] = 0;                // Backward
             method[1] = 0;                // CN
             method[2] = 0;                // Huen
+            method[3] = 0;                // RK
         }
 
         ODE_solver(double t, double t_limit, double step, int N){
@@ -72,11 +76,23 @@ class ODE_solver{
             method[2] = 1;
         }
 
+        void set_kutta(){
+            set_backward();
+
+            kutta_ = new double*[4];
+            for(i_ = 0; i_ < 4; i_++){
+                kutta_[i_] = new double[dim_]; 
+            }
+
+            method[3] = 1;
+
+            rk_tol_ = 1.e-4;
+        }
+
         // set parameters
-        void initial_values(double *u, double *du){
+        void initial_values(double *u){
             for(i_ = 0; i_ < dim_; i_++){
                 u_[i_] = u[i_];
-                der_u_[i_] = du[i_];
             }
         }
 
@@ -106,6 +122,14 @@ class ODE_solver{
         void cn_step();
 
         void huen_step();
+
+        void RK4_step();
+
+        void RK2_3_pre_step();
+
+        void RK2_3_step(double tol);
+
+        void adapt_step_size();
 
         // return values
         double h(){return step_size_;}
@@ -148,19 +172,12 @@ class ODE_solver{
             if(method[2] == 1){
                 delete[] extra_der_u_;
             }
+
+            if(method[3] == 1){
+                delete[] kutta_;
+            }
         }
 };
-
-inline void ODE_solver::forward_euler_step(){
-    system_(u_, der_u_, time_);
-
-    for(i_ = 0; i_ < dim_; i_++){
-        u_[i_] += step_size_*der_u_[i_];
-    }
-
-    time_ = time_ + step_size_;
-    step_counter_++;
-}
 
 double distance(double *u, double *v, int dim){
     int i;
@@ -171,6 +188,17 @@ double distance(double *u, double *v, int dim){
     }
 
     return sum;
+}
+
+inline void ODE_solver::forward_euler_step(){
+    system_(u_, der_u_, time_);
+
+    for(i_ = 0; i_ < dim_; i_++){
+        u_[i_] += step_size_*der_u_[i_];
+    }
+
+    time_ = time_ + step_size_;
+    step_counter_++;
 }
 
 inline void ODE_solver::backward_euler_step(){
@@ -232,6 +260,115 @@ inline void ODE_solver::huen_step(){
     step_counter_++;
 }
 
+inline void ODE_solver::RK4_step(){
+    // calc first k
+    system_(u_, kutta_[0], time_);
+
+    // calc second k
+    time_ += step_size_/2.;
+
+    for(i_ = 0; i_ < dim_; i_++){
+        new_u_[i_] = u_[i_] + step_size_*kutta_[0][i_]/2.;
+    }
+
+    system_(new_u_, kutta_[1], time_);
+
+    // calc third k
+    for(i_ = 0; i_ < dim_; i_++){
+        new_u_[i_] = u_[i_] + step_size_*kutta_[1][i_]/2.;
+    }
+
+    system_(new_u_, kutta_[2], time_);
+
+    // calc forth k
+    time_ += step_size_/2.;
+
+    for(i_ = 0; i_ < dim_; i_++){
+        new_u_[i_] = u_[i_] + step_size_*kutta_[2][i_];
+    }
+
+    system_(new_u_, kutta_[3], time_);
+
+    // update solution
+    for(i_ = 0; i_ < dim_; i_++){
+        u_[i_] = u_[i_] + step_size_*(kutta_[0][i_] + 2.*kutta_[1][i_] + 2.*kutta_[2][i_] + kutta_[3][i_])/6.;
+    }
+}
+
+inline void ODE_solver::RK2_3_pre_step(){
+    // calc first k
+    system_(u_, kutta_[0], time_);
+
+    // calc second k
+    time_ += step_size_/2.;
+
+    for(i_ = 0; i_ < dim_; i_++){
+        new_u_[i_] = u_[i_] + step_size_*kutta_[0][i_]/2.;
+    }
+
+    system_(new_u_, kutta_[1], time_);
+
+    // calc third k
+    time_ += step_size_/4.;
+
+    for(i_ = 0; i_ < dim_; i_++){
+        new_u_[i_] = u_[i_] + 3*step_size_*kutta_[1][i_]/4.;
+    }
+
+    system_(new_u_, kutta_[2], time_);
+
+    // calc forth k
+    time_ += step_size_/4.;
+
+    for(i_ = 0; i_ < dim_; i_++){
+        new_u_[i_] = u_[i_] + step_size_*(2*kutta_[0][i_] + 3.*kutta_[1][i_] + 4.*kutta_[2][i_])/9.;
+    }
+
+    system_(new_u_, kutta_[3], time_);
+
+    // update solution
+    for(i_ = 0; i_ < dim_; i_++){
+        new_u_[i_] = u_[i_] + step_size_*(2.*kutta_[0][i_] + 3.*kutta_[1][i_] + 4.*kutta_[2][i_])/9.;
+
+        // for the higher order solution
+        old_u_[i_] = u_[i_] + step_size_*(7.*kutta_[0][i_] + 6.*kutta_[1][i_] + 8.*kutta_[2][i_] + 3.*kutta_[3][i_])/24.;
+    }
+}
+
+inline void ODE_solver::RK2_3_step(double tol){
+    rk_tol_ = tol;
+
+    do{
+        RK2_3_pre_step();
+        adapt_step_size();
+    }while(go_back_ == 1);
+
+    for(i_ = 0; i_ < dim_; i_++){
+        u_[i_] = new_u_[i_];
+    }
+}
+
+inline void ODE_solver::adapt_step_size(){
+    rk_error_ = -1.;
+    
+    for(i_ = 0; i_ < dim_; i_++){
+        if(fabs(old_u_[i_] - new_u_[i_]) > rk_error_){
+            rk_error_ = fabs(old_u_[i_] - new_u_[i_]);
+        }
+    }
+
+    if(rk_error_ < rk_tol_){
+        go_back_ = 0;
+
+        if(rk_error_ < rk_tol_/100.){
+            step_size_ = step_size_*2.;
+        }
+    }
+    else{
+        step_size_ = step_size_/2.;
+        go_back_ = 1;
+    }
+}
 
 inline void ODE_solver::print_system(){
     std::cout << "t = " << time_;
