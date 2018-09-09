@@ -10,7 +10,9 @@ class ODE_solver{
         int i_;
 
         // function pointer to the functions being avaliated
-        typedef void (*fptr)(double *u, double *du, double t);
+        typedef void (*fptr)(double *u, double *du, double t, struct Params params);
+        struct Params params_;
+        fptr system_;
 
         // variables
         double * u_;
@@ -21,7 +23,6 @@ class ODE_solver{
         double rk_error_, rk_tol_;
         int go_back_;
         int dim_;
-        fptr system_;
         int loop_counter_;
 
     public:
@@ -96,8 +97,9 @@ class ODE_solver{
             }
         }
 
-        void set_system(fptr func){
+        void set_system(fptr func, struct Params params){
             system_ = func;
+            params_ = params;
         }
 
         void set_time(double t = 0.0, double t_limit = 10., double step = 0.01){
@@ -191,7 +193,7 @@ double distance(double *u, double *v, int dim){
 }
 
 inline void ODE_solver::forward_euler_step(){
-    system_(u_, der_u_, time_);
+    system_(u_, der_u_, time_, params_);
 
     for(i_ = 0; i_ < dim_; i_++){
         u_[i_] += step_size_*der_u_[i_];
@@ -215,7 +217,7 @@ inline void ODE_solver::backward_euler_step(){
             new_u_[i_] = u_[i_];
         }
 
-        system_(u_, der_u_, time_);
+        system_(u_, der_u_, time_, params_);
 
         for(i_ = 0; i_ < dim_; i_++){
             u_[i_] = old_u_[i_] + step_size_*der_u_[i_];
@@ -232,7 +234,7 @@ inline void ODE_solver::backward_euler_step(){
 
 inline void ODE_solver::cn_step(){
     // calculate fn
-    system_(u_, extra_der_u_, time_);
+    system_(u_, extra_der_u_, time_, params_);
 
     // calculate fn+i, already atualizes the steo counter and time
     backward_euler_step();
@@ -245,12 +247,12 @@ inline void ODE_solver::cn_step(){
 
 inline void ODE_solver::huen_step(){
     // calculate fn
-    system_(u_, extra_der_u_, time_);
+    system_(u_, extra_der_u_, time_, params_);
 
     // calculate fn+1
     time_ = time_ + step_size_;
 
-    system_(u_, der_u_, time_);
+    system_(u_, der_u_, time_, params_);
 
     // calculate huen step
     for(i_ = 0; i_ < dim_; i_++){
@@ -262,7 +264,7 @@ inline void ODE_solver::huen_step(){
 
 inline void ODE_solver::RK4_step(){
     // calc first k
-    system_(u_, kutta_[0], time_);
+    system_(u_, kutta_[0], time_, params_);
 
     // calc second k
     time_ += step_size_/2.;
@@ -271,14 +273,14 @@ inline void ODE_solver::RK4_step(){
         new_u_[i_] = u_[i_] + step_size_*kutta_[0][i_]/2.;
     }
 
-    system_(new_u_, kutta_[1], time_);
+    system_(new_u_, kutta_[1], time_, params_);
 
     // calc third k
     for(i_ = 0; i_ < dim_; i_++){
         new_u_[i_] = u_[i_] + step_size_*kutta_[1][i_]/2.;
     }
 
-    system_(new_u_, kutta_[2], time_);
+    system_(new_u_, kutta_[2], time_, params_);
 
     // calc forth k
     time_ += step_size_/2.;
@@ -287,7 +289,7 @@ inline void ODE_solver::RK4_step(){
         new_u_[i_] = u_[i_] + step_size_*kutta_[2][i_];
     }
 
-    system_(new_u_, kutta_[3], time_);
+    system_(new_u_, kutta_[3], time_, params_);
 
     // update solution
     for(i_ = 0; i_ < dim_; i_++){
@@ -297,7 +299,7 @@ inline void ODE_solver::RK4_step(){
 
 inline void ODE_solver::RK2_3_pre_step(){
     // calc first k
-    system_(u_, kutta_[0], time_);
+    system_(u_, kutta_[0], time_, params_);
 
     // calc second k
     time_ += step_size_/2.;
@@ -306,7 +308,7 @@ inline void ODE_solver::RK2_3_pre_step(){
         new_u_[i_] = u_[i_] + step_size_*kutta_[0][i_]/2.;
     }
 
-    system_(new_u_, kutta_[1], time_);
+    system_(new_u_, kutta_[1], time_, params_);
 
     // calc third k
     time_ += step_size_/4.;
@@ -315,7 +317,7 @@ inline void ODE_solver::RK2_3_pre_step(){
         new_u_[i_] = u_[i_] + 3*step_size_*kutta_[1][i_]/4.;
     }
 
-    system_(new_u_, kutta_[2], time_);
+    system_(new_u_, kutta_[2], time_, params_);
 
     // calc forth k
     time_ += step_size_/4.;
@@ -324,7 +326,7 @@ inline void ODE_solver::RK2_3_pre_step(){
         new_u_[i_] = u_[i_] + step_size_*(2*kutta_[0][i_] + 3.*kutta_[1][i_] + 4.*kutta_[2][i_])/9.;
     }
 
-    system_(new_u_, kutta_[3], time_);
+    system_(new_u_, kutta_[3], time_, params_);
 
     // update solution
     for(i_ = 0; i_ < dim_; i_++){

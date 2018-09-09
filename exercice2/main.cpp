@@ -5,7 +5,10 @@
 #include <fstream>
 #include <cstring>
 
-typedef void (*func)(double *u, double *du, double t);
+struct Params{
+};
+
+typedef void (*func)(double *u, double *du, double t, struct Params params);
 
 struct ODE_set{
     double initial;
@@ -17,6 +20,7 @@ struct ODE_set{
 
     std::string method;
     std::string outfile;
+    struct Params params;
     func function;
 };
 

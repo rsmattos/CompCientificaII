@@ -5,7 +5,7 @@ void solver_to_screen(struct ODE_set &set, double *u){
     solver.initial_values(u);
     solver.set_time(set);
 
-    solver.set_system(set.function);
+    solver.set_system(set.function, set.params);
 
     if(set.method == "forward"){
         while(solver.t() < solver.t_limit()){
@@ -70,7 +70,7 @@ void solver_to_file(struct ODE_set &set, double *u){
     solver.initial_values(u);
     solver.set_time(set);
 
-    solver.set_system(set.function);
+    solver.set_system(set.function, set.params);
 
     std::ofstream output(set.outfile.c_str());
 
