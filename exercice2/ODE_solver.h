@@ -140,6 +140,8 @@ class ODE_solver{
 
         double t_limit(){return t_limit_;}
 
+        double get_variables(double *u);
+
         int dim(){return dim_;}
 
         int step_counter(){return step_counter_;}
@@ -372,6 +374,11 @@ inline void ODE_solver::adapt_step_size(){
     }
 }
 
+inline void ODE_solver::get_variables(double *u){
+    for(i_ = 0; i_ < dim_; i_++){
+        u[i_] = u_[i_];
+    }
+}
 inline void ODE_solver::print_system(){
     std::cout << "t = " << time_;
     for(i_ = 0; i_ < dim_; i_++){
