@@ -140,7 +140,7 @@ class ODE_solver{
 
         double t_limit(){return t_limit_;}
 
-        double get_variables(double *u);
+        void get_variables(double *u);
 
         int dim(){return dim_;}
 
