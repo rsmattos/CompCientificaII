@@ -25,13 +25,14 @@ void planetary_system(struct ODE_set set, struct Params *p){
         p->planet[p->i].new_velocity(u[2], u[3]);
     }
 
+    std::cout.precision(7);
     std::cout << "primeiro passo" << std::endl;
 
     for(i = 0; i < p->planets; i++){
         p->planet[i].update_positions();
         p->planet[i].update_velocities();
     
-        std::cout << p->planet[i].get_name() << " (" << p->planet[i].get_xx() << ", " << p->planet[i].get_xy() << ")" << std::endl;
+        std::cout << p->planet[i].get_name() << '\t' << "(" << p->planet[i].get_xx() << ", " << p->planet[i].get_xy() << ")" << std::endl;
     }
 
     // calculate new positions and velocities for each planet
@@ -56,7 +57,7 @@ void planetary_system(struct ODE_set set, struct Params *p){
         p->planet[i].update_positions();
         p->planet[i].update_velocities();
     
-        std::cout << p->planet[i].get_name() << " (" << p->planet[i].get_xx() << ", " << p->planet[i].get_xy() << ")" << std::endl;
+        std::cout << p->planet[i].get_name() << '\t' << "(" << p->planet[i].get_xx() << ", " << p->planet[i].get_xy() << ")" << std::endl;
     }
 
     // update positions and velocities
