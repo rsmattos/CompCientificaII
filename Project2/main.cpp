@@ -10,7 +10,7 @@ struct Params{
     int i;
 };
 
-typedef void (*func)(double *u, double *du, double t, struct Params &params);
+typedef void (*func)(double *u, double *du, double t, struct Params *params);
 
 struct ODE_set{
     double initial;
@@ -59,7 +59,7 @@ int main(){
     // set up solver
     ODE_solver solver(set.dimension);
     solver.set_time(set);
-    solver.set_system(set.function, p);
+    solver.set_system(set.function, &p);
     solver.set_kutta();
 
     double *u = new double[set.dimension];

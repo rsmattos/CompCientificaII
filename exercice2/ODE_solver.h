@@ -10,8 +10,8 @@ class ODE_solver{
         int i_;
 
         // function pointer to the functions being avaliated
-        typedef void (*fptr)(double *u, double *du, double t, struct Params &params);
-        struct Params params_;
+        typedef void (*fptr)(double *u, double *du, double t, struct Params *params);
+        struct Params *params_;
         fptr system_;
 
         // variables
@@ -97,7 +97,7 @@ class ODE_solver{
             }
         }
 
-        void set_system(fptr func, struct Params &params){
+        void set_system(fptr func, struct Params *params){
             system_ = func;
             params_ = params;
         }
