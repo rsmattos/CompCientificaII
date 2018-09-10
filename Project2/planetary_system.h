@@ -11,7 +11,7 @@ void planetary_system(struct ODE_set set, struct Params *p){
 
     // calculate new positions and velocities for each planet
     // transform position and velocity in variable vector
-    for(p->i = 0; p->i < p->planets; p->i++){
+    for(p->i = 1; p->i < p->planets; p->i++){
         u[0] = p->planet[p->i].get_xx();
         u[1] = p->planet[p->i].get_xy();
         u[2] = p->planet[p->i].get_vx();
