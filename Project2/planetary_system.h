@@ -56,7 +56,7 @@ void planetary_system(struct ODE_set set, struct Params *p){
         p->planet[i].update_positions();
         p->planet[i].update_velocities();
     
-        std::cout << "planet" << i << " (" << p->planet[i].get_xx() << ", " << p->planet[i].get_xy() << ")" << std::endl;
+        std::cout << p->planet[i].get_name() << " (" << p->planet[i].get_xx() << ", " << p->planet[i].get_xy() << ")" << std::endl;
     }
 
     // update positions and velocities

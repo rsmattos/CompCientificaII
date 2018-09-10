@@ -35,65 +35,65 @@ int main(){
     p.planet = new class Bodies[p.planets];
 
     // sun properties, it stays outside the position update loop
-    p.planet[0].set_name(Sun);
-    p.planet[0].set_mass();
+    p.planet[0].set_name("Sun");
+    p.planet[0].set_mass(1.989e6);
     p.planet[0].set_position(600., 600.);
     p.planet[0].set_velocity(0., 0.);
 
     // planet properties by planet
     // MERCURY
-    p.planet[0].set_name(Mercury);
-    p.planet[0].set_mass();
-    p.planet[0].set_position(600., 600.);
-    p.planet[0].set_velocity(0., 0.);
+    p.planet[1].set_name("Mercury");
+    p.planet[1].set_mass(.33);
+    p.planet[1].set_position(600., 594.21);
+    p.planet[1].set_velocity(0.26371969859, 0.0362423611009);
 
     // VENUS
-    p.planet[0].set_name(Sun);
-    p.planet[0].set_mass();
-    p.planet[0].set_position(600., 600.);
-    p.planet[0].set_velocity(0., 0.);
+    p.planet[2].set_name("Venus");
+    p.planet[2].set_mass(4.87);
+    p.planet[2].set_position(600., 589.18);
+    p.planet[2].set_velocity(0.841810004715, 0.240343746883);
 
     // EARTH
-    p.planet[0].set_name(Sun);
-    p.planet[0].set_mass();
-    p.planet[0].set_position(600., 600.);
-    p.planet[0].set_velocity(0., 0.);
+    p.planet[3].set_name("Earth");
+    p.planet[3].set_mass(5.97);
+    p.planet[3].set_position(600., 749.6);
+    p.planet[3].set_velocity(-0.177759577499, -0.0754366450966);
 
     // MARS
-    p.planet[0].set_name(Sun);
-    p.planet[0].set_mass();
-    p.planet[0].set_position(600., 600.);
-    p.planet[0].set_velocity(0., 0.);
+    p.planet[4].set_name("Mars");
+    p.planet[4].set_mass(.642);
+    p.planet[4].set_position(600., 372.0);
+    p.planet[4].set_velocity(0.0536458655351, -0.0754366450966);
 
     // JUPITER
-    p.planet[0].set_name(Sun);
-    p.planet[0].set_mass();
-    p.planet[0].set_position(600., 600.);
-    p.planet[0].set_velocity(0., 0.);
+    p.planet[5].set_name("Jupiter");
+    p.planet[5].set_mass(1898.);
+    p.planet[5].set_position(600., 178.6);
+    p.planet[5].set_velocity(1.96697778225, -0.485436372127);
 
     // SATURN
-    p.planet[0].set_name(Sun);
-    p.planet[0].set_mass();
-    p.planet[0].set_position(600., 600.);
-    p.planet[0].set_velocity(0., 0.);
+    p.planet[6].set_name("Saturn");
+    p.planet[6].set_mass(568.);
+    p.planet[6].set_position(833.5, 1190.0);
+    p.planet[6].set_velocity(0.84539364043, -0.244297836619);
 
     // URANUS
-    p.planet[0].set_name(Sun);
-    p.planet[0].set_mass();
-    p.planet[0].set_position(600., 600.);
-    p.planet[0].set_velocity(0., 0.);
+    p.planet[7].set_name("Uranus");
+    p.planet[7].set_mass(86.8);
+    p.planet[7].set_position(874.13, 50.0);
+    p.planet[7].set_velocity(0.373091224153, -0.244297836619);
 
     // NEPTUNE
-    p.planet[0].set_name(Sun);
-    p.planet[0].set_mass();
-    p.planet[0].set_position(600., 600.);
-    p.planet[0].set_velocity(0., 0.);
+    p.planet[8].set_name("Neptune");
+    p.planet[8].set_mass(102.0);
+    p.planet[8].set_position(144.45, 10.0);
+    p.planet[8].set_velocity(0.418646550354, -0.159208435589);
 
     // PLUTO
-    p.planet[0].set_name(Sun);
-    p.planet[0].set_mass();
-    p.planet[0].set_position(600., 600.);
-    p.planet[0].set_velocity(0., 0.);
+    p.planet[9].set_name("Pluto");
+    p.planet[9].set_mass(.0146);
+    p.planet[9].set_position(590.0,-100.0);
+    p.planet[9].set_velocity(0.00568501382124, 3.47457436434e-05);
 
 
     // setting ODE params

@@ -36,6 +36,7 @@ class Bodies{
         double get_vx(){return v_[0];}
         double get_vy(){return v_[1];}
         double get_mass(){return m_;}
+        std::string get_name(){return name_;}
 };
 
 inline void Bodies::set_position(double *x){
