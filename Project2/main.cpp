@@ -22,6 +22,8 @@ struct ODE_set{
 
 #include "bodies.h"
 #include "../exercice2/ODE_solver.h"
+#include "../exercice2/RK4.h"
+#include "../exercice2/verlet.h"
 #include "function.h"
 #include "planetary_system.h"
 
@@ -97,6 +99,7 @@ int main(){
 
 
     // setting ODE params
+    // using runge kutta 4
     struct ODE_set set;
 
     set.initial = 0.;
@@ -106,6 +109,13 @@ int main(){
     set.function = &planetary2D;
 
     planetary_system(set, &p);
+
+    std::cout << "Verlet" << std::endl;
+
+    // using verlet
+    set.function = &planetary2D_verlet;
+
+    planetary_system_verlet(set, &p);
 
     delete[] p.planet;
 }
