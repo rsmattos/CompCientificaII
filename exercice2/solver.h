@@ -15,11 +15,11 @@ void solver_to_file(struct ODE_set &set, double *u){
         forward.initial_values(u);
         forward.set_time(set);
 
-        forward.set_system(set.function, set.params);
+        forward.set_system(set.function, &set.params);
 
         forward.file_CSV_print_system(output);
 
-        while(forward.t() < forward.t_limit()){
+        while(forward.time() < forward.time_limit()){
             forward.forward_euler_step();
             forward.file_CSV_print_system(output);
         }
@@ -31,11 +31,11 @@ void solver_to_file(struct ODE_set &set, double *u){
         backward.initial_values(u);
         backward.set_time(set);
 
-        backward.set_system(set.function, set.params);
+        backward.set_system(set.function, &set.params);
 
         backward.file_CSV_print_system(output);
 
-        while(backward.t() < backward.t_limit()){
+        while(backward.time() < backward.time_limit()){
             backward.backward_euler_step();
             backward.file_CSV_print_system(output);
         }
@@ -47,11 +47,11 @@ void solver_to_file(struct ODE_set &set, double *u){
         cn.initial_values(u);
         cn.set_time(set);
 
-        cn.set_system(set.function, set.params);
+        cn.set_system(set.function, &set.params);
 
         cn.file_CSV_print_system(output);
 
-        while(cn.t() < cn.t_limit()){
+        while(cn.time() < cn.time_limit()){
             cn.cn_step();
             cn.file_CSV_print_system(output);
         }
@@ -63,11 +63,11 @@ void solver_to_file(struct ODE_set &set, double *u){
         heun.initial_values(u);
         heun.set_time(set);
 
-        heun.set_system(set.function, set.params);
+        heun.set_system(set.function, &set.params);
 
         heun.file_CSV_print_system(output);
 
-        while(heun.t() < heun.t_limit()){
+        while(heun.time() < heun.time_limit()){
             heun.heun_step();
             heun.file_CSV_print_system(output);
         }
@@ -79,11 +79,11 @@ void solver_to_file(struct ODE_set &set, double *u){
         rk4.initial_values(u);
         rk4.set_time(set);
 
-        rk4.set_system(set.function, set.params);
+        rk4.set_system(set.function, &set.params);
 
         rk4.file_CSV_print_system(output);
 
-        while(rk4.t() < rk4.t_limit()){
+        while(rk4.time() < rk4.time_limit()){
             rk4.rk4_step();
             rk4.file_CSV_print_system(output);
         }
@@ -95,11 +95,11 @@ void solver_to_file(struct ODE_set &set, double *u){
         rk23.initial_values(u);
         rk23.set_time(set);
 
-        rk23.set_system(set.function, set.params);
+        rk23.set_system(set.function, &set.params);
 
         rk23.file_CSV_print_system(output);
 
-        while(rk23.t() < rk23.t_limit()){
+        while(rk23.time() < rk23.time_limit()){
             rk23.rk23_step();
             rk23.file_CSV_print_system(output);
         }
