@@ -2,6 +2,7 @@ class Backward_euler: public ODE_solver{
     protected:
         double *old_u_;
         double *new_u_;
+        int loop_counter_;
 
     public:
         // constructor
