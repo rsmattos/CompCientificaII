@@ -37,7 +37,6 @@ struct ODE_set{
 
 int main(){
     struct ODE_set set;
-    // set.params = new Params;
 
     // exemplo
     set.initial = 0.;
@@ -87,7 +86,6 @@ int main(){
     solver_to_file(set, u1);
 
     delete[] u1;
-    // delete[] set.params;
 
     return 0;
 }
