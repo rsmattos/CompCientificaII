@@ -165,16 +165,21 @@ void solver_to_file(struct ODE_set &set, double *u){
     }
 
     if(set.method == "rk4"){
-        solver.set_kutta();
-        
-        while(solver.t() < solver.t_limit()){
-            solver.RK4_step();
-            solver.file_CSV_print_system(output);
+        RK4 rk4(set.dimension);
+
+        rk4.initial_values(u);
+        rk4.set_time(set);
+
+        rk4.set_system(set.function, set.params);
+
+        while(rk4.t() < rk4.t_limit()){
+            rk4.rk4_step();
+            rk4.file_CSV_print_system(output);
         }
     }
 
     if(set.method == "rk23"){
-        solver.set_kutta();
+        // solver.set_kutta();
         
         while(solver.t() < solver.t_limit()){
             solver.RK2_3_step(set.rk_tol);

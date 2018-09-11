@@ -31,6 +31,8 @@ struct ODE_set{
 #include "b_euler.h"
 #include "crank-nicolson.h"
 #include "heun.h"
+#include "RK4.h"
+#include "RK23.h"
 #include "solver.h"
 
 int main(){
@@ -43,8 +45,8 @@ int main(){
     set.final = 20;
     set.step = 0.1;
     set.dimension = 1;
-    set.method = "heun";
-    set.outfile = "./OUTPUT/test_heun.csv";
+    set.method = "rk4";
+    set.outfile = "./OUTPUT/test_rk4.csv";
     set.function = &exemplo_1;
 
     double *u1 = new double[set.dimension];
