@@ -28,6 +28,7 @@ struct ODE_set{
 #include "functions_bank.h"
 #include "ODE_solver.h"
 #include "f_euler.h"
+#include "b_euler.h"
 #include "solver.h"
 
 int main(){
@@ -35,13 +36,13 @@ int main(){
     set.params = new Params;
 
     // exemplo
-    // forward euler
+    // backward euler
     set.initial = 0.;
     set.final = 20;
     set.step = 0.1;
     set.dimension = 1;
-    set.method = "forward_euler";
-    set.outfile = "./OUTPUT/test_forward.csv";
+    set.method = "backward_euler";
+    set.outfile = "./OUTPUT/test_backward.csv";
     set.function = &exemplo_1;
 
     double *u1 = new double[set.dimension];
@@ -51,9 +52,9 @@ int main(){
     solver_to_file(set, u1);
 
     // // referencia
-    // // forward euler
-    // set.method = "forward";
-    // set.outfile = "./OUTPUT/ref_forward.csv";
+    // // backward euler
+    // set.method = "backward";
+    // set.outfile = "./OUTPUT/ref_backward.csv";
 
     // solver_to_file(set, u1);
 

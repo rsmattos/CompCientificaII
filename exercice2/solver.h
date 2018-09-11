@@ -1,4 +1,4 @@
-// metodo de euler avancado
+/*// metodo de euler avancado
 void solver_to_screen(struct ODE_set &set, double *u){
     ODE_solver solver(set.dimension);
 
@@ -58,7 +58,7 @@ void solver_to_screen(struct ODE_set &set, double *u){
             solver.print_system();
         }
     }
-}
+}*/
 
 // metodo de euler avancado
 // metodo de euler avancado
@@ -104,12 +104,26 @@ void solver_to_file(struct ODE_set &set, double *u){
     }
 
 
-    if(set.method == "backward"){
-        solver.set_backward();
+    // if(set.method == "backward"){
+    //     solver.set_backward();
 
-        while(solver.t() < solver.t_limit()){
-            solver.backward_euler_step();
-            solver.file_CSV_print_system(output);
+    //     while(solver.t() < solver.t_limit()){
+    //         solver.backward_euler_step();
+    //         solver.file_CSV_print_system(output);
+    //     }
+    // }
+
+    if(set.method == "backward_euler"){
+        Backward_euler backward(set.dimension);
+
+        backward.initial_values(u);
+        backward.set_time(set);
+
+        backward.set_system(set.function, set.params);
+
+        while(backward.t() < backward.t_limit()){
+            backward.backward_euler_step();
+            backward.file_CSV_print_system(output);
         }
     }
 

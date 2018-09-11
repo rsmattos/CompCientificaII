@@ -117,10 +117,6 @@ class ODE_solver{
         }
 
         // solvers
-        // void forward_euler_step();
-
-        void backward_euler_step();
-
         void cn_step();
 
         void huen_step();
@@ -183,63 +179,12 @@ class ODE_solver{
         }
 };
 
-double distance(double *u, double *v, int dim){
-    int i;
-    double sum = 0;
-
-    for(i = 0; i < dim; i++){
-        sum += (u[i] - v[i])*(u[i] - v[i]);
-    }
-
-    return sum;
-}
-
-// inline void ODE_solver::forward_euler_step(){
-//     system_(u_, der_u_, time_, params_);
-
-//     for(i_ = 0; i_ < dim_; i_++){
-//         u_[i_] += step_size_*der_u_[i_];
-//     }
-
-//     time_ = time_ + step_size_;
-//     step_counter_++;
-// }
-
-inline void ODE_solver::backward_euler_step(){
-    time_ = time_ + step_size_;
-
-    loop_counter_ = 0;
-
-    for(i_ = 0; i_ < dim_; i_++){
-        old_u_[i_] = u_[i_];
-    }
-
-    do{
-        for(i_ = 0; i_ < dim_; i_++){
-            new_u_[i_] = u_[i_];
-        }
-
-        system_(u_, der_u_, time_, params_);
-
-        for(i_ = 0; i_ < dim_; i_++){
-            u_[i_] = old_u_[i_] + step_size_*der_u_[i_];
-        }
-
-        loop_counter_++;
-
-        if(loop_counter_ > 20){break;}
-
-    }while(distance(u_, new_u_, dim_) > .001*step_size_);
-        
-    step_counter_++;
-}
-
 inline void ODE_solver::cn_step(){
     // calculate fn
     system_(u_, extra_der_u_, time_, params_);
 
     // calculate fn+i, already atualizes the steo counter and time
-    backward_euler_step();
+    // backward_euler_step();
 
     // calculate the cn step
     for(i_ = 0; i_ < dim_; i_++){
