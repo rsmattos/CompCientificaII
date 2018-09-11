@@ -20,7 +20,7 @@ struct ODE_set{
 
     std::string method;
     std::string outfile;
-    struct Params params;
+    struct Params *params;
     func function;
 };
 
