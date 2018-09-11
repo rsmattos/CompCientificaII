@@ -40,27 +40,51 @@ int main(){
     set.params = new Params;
 
     // exemplo
-    // backward euler
     set.initial = 0.;
     set.final = 20;
     set.step = 0.1;
     set.dimension = 1;
-    set.method = "rk23";
-    set.outfile = "./OUTPUT/test_rk23.csv";
     set.function = &exemplo_1;
 
     double *u1 = new double[set.dimension];
 
     u1[0] = 1.;
-    
+
+    // forward euler
+    set.method = "forward_euler";
+    set.outfile = "./OUTPUT/test_forward_euler.csv";
+
     solver_to_file(set, u1);
 
-    // // referencia
-    // // backward euler
-    // set.method = "backward";
-    // set.outfile = "./OUTPUT/ref_backward.csv";
+    // backward euler
+    set.method = "backward_euler";
+    set.outfile = "./OUTPUT/test_backward_euler.csv";
 
-    // solver_to_file(set, u1);
+    solver_to_file(set, u1);
+
+    // cn
+    set.method = "cn";
+    set.outfile = "./OUTPUT/test_cn.csv";
+
+    solver_to_file(set, u1);
+
+    // heun
+    set.method = "heun";
+    set.outfile = "./OUTPUT/test_heun.csv";
+
+    solver_to_file(set, u1);
+
+    // rk4
+    set.method = "rk4";
+    set.outfile = "./OUTPUT/test_rk4.csv";
+
+    solver_to_file(set, u1);
+
+    // forward euler
+    set.method = "rk23";
+    set.outfile = "./OUTPUT/test_rk23.csv";
+
+    solver_to_file(set, u1);
 
     delete[] u1;
     delete[] set.params;

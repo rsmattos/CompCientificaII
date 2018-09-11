@@ -1,93 +1,13 @@
-/*// metodo de euler avancado
-void solver_to_screen(struct ODE_set &set, double *u){
-    ODE_solver solver(set.dimension);
-
-    solver.initial_values(u);
-    solver.set_time(set);
-
-    solver.set_system(set.function, set.params);
-
-    // if(set.method == "forward"){
-    //     while(solver.t() < solver.t_limit()){
-    //         solver.forward_euler_step();
-    //         solver.print_system();
-    //     }
-    // }
-
-    if(set.method == "backward"){
-        solver.set_backward();
-
-        while(solver.t() < solver.t_limit()){
-            solver.backward_euler_step();
-            solver.print_system();
-        }
-    }
-
-    if(set.method == "cn"){
-        solver.set_cn();
-
-        while(solver.t() < solver.t_limit()){
-            solver.cn_step();
-            solver.print_system();
-        }
-    }
-
-    if(set.method == "huen"){
-        solver.set_huen();
-        
-        while(solver.t() < solver.t_limit()){
-            solver.huen_step();
-            solver.print_system();
-        }
-    }
-
-    if(set.method == "rk4"){
-        solver.set_kutta();
-        
-        while(solver.t() < solver.t_limit()){
-            solver.RK4_step();
-            solver.print_system();
-        }
-    }
-
-    if(set.method == "rk23"){
-        solver.set_kutta();
-        
-        while(solver.t() < solver.t_limit()){
-            solver.RK2_3_step(set.rk_tol);
-            solver.print_system();
-        }
-    }
-}*/
-
-// metodo de euler avancado
-// metodo de euler avancado
 void solver_to_file(struct ODE_set &set, double *u){
     int i;
-
-    ODE_solver solver(set.dimension);
-
-    solver.initial_values(u);
-    solver.set_time(set);
-
-    solver.set_system(set.function, set.params);
 
     std::ofstream output(set.outfile.c_str());
 
     output << "t";
-    for(i = 0; i < solver.dim(); i++){
+    for(i = 0; i < set.dimension; i++){
         output << ",u[" << i << "]"; 
     }
     output << std::endl;
-
-    solver.file_CSV_print_system(output);
-
-    // if(set.method == "forward"){
-    //     while(solver.t() < solver.t_limit()){
-    //         solver.forward_euler_step();
-    //         solver.file_CSV_print_system(output);
-    //     }
-    // }
 
     if(set.method == "forward_euler"){
         Forward_euler forward(set.dimension);
@@ -97,21 +17,13 @@ void solver_to_file(struct ODE_set &set, double *u){
 
         forward.set_system(set.function, set.params);
 
+        forward.file_CSV_print_system(output);
+
         while(forward.t() < forward.t_limit()){
             forward.forward_euler_step();
             forward.file_CSV_print_system(output);
         }
     }
-
-
-    // if(set.method == "backward"){
-    //     solver.set_backward();
-
-    //     while(solver.t() < solver.t_limit()){
-    //         solver.backward_euler_step();
-    //         solver.file_CSV_print_system(output);
-    //     }
-    // }
 
     if(set.method == "backward_euler"){
         Backward_euler backward(set.dimension);
@@ -121,28 +33,23 @@ void solver_to_file(struct ODE_set &set, double *u){
 
         backward.set_system(set.function, set.params);
 
+        backward.file_CSV_print_system(output);
+
         while(backward.t() < backward.t_limit()){
             backward.backward_euler_step();
             backward.file_CSV_print_system(output);
         }
     }
 
-    // if(set.method == "cn"){
-    //     solver.set_cn();
-
-    //     while(solver.t() < solver.t_limit()){
-    //         solver.cn_step();
-    //         solver.file_CSV_print_system(output);
-    //     }
-    // }
-
-    if(set.method == "crank_nicolson"){
+    if(set.method == "cn"){
         Crank_Nicolson cn(set.dimension);
 
         cn.initial_values(u);
         cn.set_time(set);
 
         cn.set_system(set.function, set.params);
+
+        cn.file_CSV_print_system(output);
 
         while(cn.t() < cn.t_limit()){
             cn.cn_step();
@@ -158,6 +65,8 @@ void solver_to_file(struct ODE_set &set, double *u){
 
         heun.set_system(set.function, set.params);
 
+        heun.file_CSV_print_system(output);
+
         while(heun.t() < heun.t_limit()){
             heun.heun_step();
             heun.file_CSV_print_system(output);
@@ -172,6 +81,8 @@ void solver_to_file(struct ODE_set &set, double *u){
 
         rk4.set_system(set.function, set.params);
 
+        rk4.file_CSV_print_system(output);
+
         while(rk4.t() < rk4.t_limit()){
             rk4.rk4_step();
             rk4.file_CSV_print_system(output);
@@ -185,6 +96,8 @@ void solver_to_file(struct ODE_set &set, double *u){
         rk23.set_time(set);
 
         rk23.set_system(set.function, set.params);
+
+        rk23.file_CSV_print_system(output);
 
         while(rk23.t() < rk23.t_limit()){
             rk23.rk23_step();
