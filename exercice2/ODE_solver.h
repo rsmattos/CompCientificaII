@@ -244,80 +244,80 @@ class ODE_solver{
 //     }
 // }
 
-inline void ODE_solver::RK2_3_pre_step(){
-    // calc first k
-    system_(u_, kutta_[0], time_, params_);
+// inline void ODE_solver::RK2_3_pre_step(){
+//     // calc first k
+//     system_(u_, kutta_[0], time_, params_);
 
-    // calc second k
-    time_ += step_size_/2.;
+//     // calc second k
+//     time_ += step_size_/2.;
 
-    for(i_ = 0; i_ < dim_; i_++){
-        new_u_[i_] = u_[i_] + step_size_*kutta_[0][i_]/2.;
-    }
+//     for(i_ = 0; i_ < dim_; i_++){
+//         new_u_[i_] = u_[i_] + step_size_*kutta_[0][i_]/2.;
+//     }
 
-    system_(new_u_, kutta_[1], time_, params_);
+//     system_(new_u_, kutta_[1], time_, params_);
 
-    // calc third k
-    time_ += step_size_/4.;
+//     // calc third k
+//     time_ += step_size_/4.;
 
-    for(i_ = 0; i_ < dim_; i_++){
-        new_u_[i_] = u_[i_] + 3*step_size_*kutta_[1][i_]/4.;
-    }
+//     for(i_ = 0; i_ < dim_; i_++){
+//         new_u_[i_] = u_[i_] + 3*step_size_*kutta_[1][i_]/4.;
+//     }
 
-    system_(new_u_, kutta_[2], time_, params_);
+//     system_(new_u_, kutta_[2], time_, params_);
 
-    // calc forth k
-    time_ += step_size_/4.;
+//     // calc forth k
+//     time_ += step_size_/4.;
 
-    for(i_ = 0; i_ < dim_; i_++){
-        new_u_[i_] = u_[i_] + step_size_*(2*kutta_[0][i_] + 3.*kutta_[1][i_] + 4.*kutta_[2][i_])/9.;
-    }
+//     for(i_ = 0; i_ < dim_; i_++){
+//         new_u_[i_] = u_[i_] + step_size_*(2*kutta_[0][i_] + 3.*kutta_[1][i_] + 4.*kutta_[2][i_])/9.;
+//     }
 
-    system_(new_u_, kutta_[3], time_, params_);
+//     system_(new_u_, kutta_[3], time_, params_);
 
-    // update solution
-    for(i_ = 0; i_ < dim_; i_++){
-        new_u_[i_] = u_[i_] + step_size_*(2.*kutta_[0][i_] + 3.*kutta_[1][i_] + 4.*kutta_[2][i_])/9.;
+//     // update solution
+//     for(i_ = 0; i_ < dim_; i_++){
+//         new_u_[i_] = u_[i_] + step_size_*(2.*kutta_[0][i_] + 3.*kutta_[1][i_] + 4.*kutta_[2][i_])/9.;
 
-        // for the higher order solution
-        old_u_[i_] = u_[i_] + step_size_*(7.*kutta_[0][i_] + 6.*kutta_[1][i_] + 8.*kutta_[2][i_] + 3.*kutta_[3][i_])/24.;
-    }
-}
+//         // for the higher order solution
+//         old_u_[i_] = u_[i_] + step_size_*(7.*kutta_[0][i_] + 6.*kutta_[1][i_] + 8.*kutta_[2][i_] + 3.*kutta_[3][i_])/24.;
+//     }
+// }
 
-inline void ODE_solver::RK2_3_step(double tol){
-    rk_tol_ = tol;
+// inline void ODE_solver::RK2_3_step(double tol){
+//     rk_tol_ = tol;
 
-    do{
-        RK2_3_pre_step();
-        adapt_step_size();
-    }while(go_back_ == 1);
+//     do{
+//         RK2_3_pre_step();
+//         adapt_step_size();
+//     }while(go_back_ == 1);
 
-    for(i_ = 0; i_ < dim_; i_++){
-        u_[i_] = new_u_[i_];
-    }
-}
+//     for(i_ = 0; i_ < dim_; i_++){
+//         u_[i_] = new_u_[i_];
+//     }
+// }
 
-inline void ODE_solver::adapt_step_size(){
-    rk_error_ = -1.;
+// inline void ODE_solver::adapt_step_size(){
+//     rk_error_ = -1.;
     
-    for(i_ = 0; i_ < dim_; i_++){
-        if(fabs(old_u_[i_] - new_u_[i_]) > rk_error_){
-            rk_error_ = fabs(old_u_[i_] - new_u_[i_]);
-        }
-    }
+//     for(i_ = 0; i_ < dim_; i_++){
+//         if(fabs(old_u_[i_] - new_u_[i_]) > rk_error_){
+//             rk_error_ = fabs(old_u_[i_] - new_u_[i_]);
+//         }
+//     }
 
-    if(rk_error_ < rk_tol_){
-        go_back_ = 0;
+//     if(rk_error_ < rk_tol_){
+//         go_back_ = 0;
 
-        if(rk_error_ < rk_tol_/100.){
-            step_size_ = step_size_*2.;
-        }
-    }
-    else{
-        step_size_ = step_size_/2.;
-        go_back_ = 1;
-    }
-}
+//         if(rk_error_ < rk_tol_/100.){
+//             step_size_ = step_size_*2.;
+//         }
+//     }
+//     else{
+//         step_size_ = step_size_/2.;
+//         go_back_ = 1;
+//     }
+// }
 
 inline void ODE_solver::get_variables(double *u){
     for(i_ = 0; i_ < dim_; i_++){

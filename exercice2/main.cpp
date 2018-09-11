@@ -45,8 +45,8 @@ int main(){
     set.final = 20;
     set.step = 0.1;
     set.dimension = 1;
-    set.method = "rk4";
-    set.outfile = "./OUTPUT/test_rk4.csv";
+    set.method = "rk23";
+    set.outfile = "./OUTPUT/test_rk23.csv";
     set.function = &exemplo_1;
 
     double *u1 = new double[set.dimension];

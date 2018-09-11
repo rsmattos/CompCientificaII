@@ -179,11 +179,16 @@ void solver_to_file(struct ODE_set &set, double *u){
     }
 
     if(set.method == "rk23"){
-        // solver.set_kutta();
-        
-        while(solver.t() < solver.t_limit()){
-            solver.RK2_3_step(set.rk_tol);
-            solver.file_CSV_print_system(output);
+        RK23 rk23(set.dimension);
+
+        rk23.initial_values(u);
+        rk23.set_time(set);
+
+        rk23.set_system(set.function, set.params);
+
+        while(rk23.t() < rk23.t_limit()){
+            rk23.rk23_step();
+            rk23.file_CSV_print_system(output);
         }
     }
 
