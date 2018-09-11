@@ -8,7 +8,7 @@
 struct Params{
 };
 
-typedef void (*func)(double *u, double *du, double t, struct Params params);
+typedef void (*func)(double *u, double *du, double t, struct Params *params);
 
 struct ODE_set{
     double initial;
@@ -25,12 +25,13 @@ struct ODE_set{
 };
 
 // my headers
-#include "ODE_solver.h"
 #include "functions_bank.h"
+#include "ODE_solver.h"
 #include "solver.h"
 
 int main(){
     struct ODE_set set;
+    set.params = new Params;
 
     // execicio 1
     // Runge-Kutta 4
@@ -87,6 +88,7 @@ int main(){
     solver_to_file(set, u3);
 
     delete[] u3;
+    delete[] set.params;
 
     return 0;
 }
