@@ -1,6 +1,4 @@
 class Forward_euler: public ODE_solver{
-    private:
-
     public:
         // constructor
         Forward_euler(int N);
