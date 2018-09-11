@@ -127,15 +127,28 @@ void solver_to_file(struct ODE_set &set, double *u){
         }
     }
 
-    if(set.method == "cn"){
-        solver.set_cn();
+    // if(set.method == "cn"){
+    //     solver.set_cn();
 
-        while(solver.t() < solver.t_limit()){
-            solver.cn_step();
-            solver.file_CSV_print_system(output);
+    //     while(solver.t() < solver.t_limit()){
+    //         solver.cn_step();
+    //         solver.file_CSV_print_system(output);
+    //     }
+    // }
+
+    if(set.method == "crank_nicolson"){
+        Crank_Nicolson cn(set.dimension);
+
+        cn.initial_values(u);
+        cn.set_time(set);
+
+        cn.set_system(set.function, set.params);
+
+        while(cn.t() < cn.t_limit()){
+            cn.cn_step();
+            cn.file_CSV_print_system(output);
         }
     }
-
     if(set.method == "huen"){
         solver.set_huen();
 

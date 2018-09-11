@@ -56,20 +56,20 @@ class ODE_solver{
             step_size_ = step;
         }
 
-        void set_backward(){
-            old_u_ = new double[dim_];
-            new_u_ = new double[dim_];
+        // void set_backward(){
+        //     old_u_ = new double[dim_];
+        //     new_u_ = new double[dim_];
 
-            method[0] = 1;
-        }
+        //     method[0] = 1;
+        // }
 
-        void set_cn(){
-            set_backward();
+        // void set_cn(){
+        //     set_backward();
 
-            extra_der_u_ = new double[dim_];
+        //     extra_der_u_ = new double[dim_];
 
-            method[1] = 1;
-        }
+        //     method[1] = 1;
+        // }
 
         void set_huen(){
             extra_der_u_ = new double[dim_];
@@ -78,7 +78,7 @@ class ODE_solver{
         }
 
         void set_kutta(){
-            set_backward();
+            // set_backward();
 
             kutta_ = new double*[4];
             for(i_ = 0; i_ < 4; i_++){
@@ -117,7 +117,7 @@ class ODE_solver{
         }
 
         // solvers
-        void cn_step();
+        // void cn_step();
 
         void huen_step();
 
@@ -179,18 +179,18 @@ class ODE_solver{
         }
 };
 
-inline void ODE_solver::cn_step(){
-    // calculate fn
-    system_(u_, extra_der_u_, time_, params_);
+// inline void ODE_solver::cn_step(){
+//     // calculate fn
+//     system_(u_, extra_der_u_, time_, params_);
 
-    // calculate fn+i, already atualizes the steo counter and time
-    // backward_euler_step();
+//     // calculate fn+i, already atualizes the steo counter and time
+//     backward_euler_step();
 
-    // calculate the cn step
-    for(i_ = 0; i_ < dim_; i_++){
-        u_[i_] = old_u_[i_] + step_size_*(extra_der_u_[i_] + der_u_[i_]) / 2.;
-    }
-}
+//     // calculate the cn step
+//     for(i_ = 0; i_ < dim_; i_++){
+//         u_[i_] = old_u_[i_] + step_size_*(extra_der_u_[i_] + der_u_[i_]) / 2.;
+//     }
+// }
 
 inline void ODE_solver::huen_step(){
     // calculate fn

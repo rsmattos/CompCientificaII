@@ -29,6 +29,7 @@ struct ODE_set{
 #include "ODE_solver.h"
 #include "f_euler.h"
 #include "b_euler.h"
+#include "crank-nicolson.h"
 #include "solver.h"
 
 int main(){
@@ -41,8 +42,8 @@ int main(){
     set.final = 20;
     set.step = 0.1;
     set.dimension = 1;
-    set.method = "backward_euler";
-    set.outfile = "./OUTPUT/test_backward.csv";
+    set.method = "crank_nicolson";
+    set.outfile = "./OUTPUT/test_cn.csv";
     set.function = &exemplo_1;
 
     double *u1 = new double[set.dimension];
