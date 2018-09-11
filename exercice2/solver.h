@@ -7,12 +7,12 @@ void solver_to_screen(struct ODE_set &set, double *u){
 
     solver.set_system(set.function, set.params);
 
-    if(set.method == "forward"){
-        while(solver.t() < solver.t_limit()){
-            solver.forward_euler_step();
-            solver.print_system();
-        }
-    }
+    // if(set.method == "forward"){
+    //     while(solver.t() < solver.t_limit()){
+    //         solver.forward_euler_step();
+    //         solver.print_system();
+    //     }
+    // }
 
     if(set.method == "backward"){
         solver.set_backward();
@@ -82,12 +82,27 @@ void solver_to_file(struct ODE_set &set, double *u){
 
     solver.file_CSV_print_system(output);
 
-    if(set.method == "forward"){
-        while(solver.t() < solver.t_limit()){
-            solver.forward_euler_step();
-            solver.file_CSV_print_system(output);
+    // if(set.method == "forward"){
+    //     while(solver.t() < solver.t_limit()){
+    //         solver.forward_euler_step();
+    //         solver.file_CSV_print_system(output);
+    //     }
+    // }
+
+    if(set.method == "forward_euler"){
+        Forward_euler forward(set.dimension);
+
+        forward.initial_values(u);
+        forward.set_time(set);
+
+        forward.set_system(set.function, set.params);
+
+        while(forward.t() < forward.t_limit()){
+            forward.forward_euler_step();
+            forward.file_CSV_print_system(output);
         }
     }
+
 
     if(set.method == "backward"){
         solver.set_backward();

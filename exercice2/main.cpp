@@ -27,67 +27,37 @@ struct ODE_set{
 // my headers
 #include "functions_bank.h"
 #include "ODE_solver.h"
+#include "f_euler.h"
 #include "solver.h"
 
 int main(){
     struct ODE_set set;
     set.params = new Params;
 
-    // execicio 1
-    // Runge-Kutta 4
+    // exemplo
+    // forward euler
     set.initial = 0.;
     set.final = 20;
     set.step = 0.1;
-    set.dimension = 2;
-    set.method = "rk4";
-    set.outfile = "./OUTPUT/exercicio1_Runge_Kutta_4.csv";
-    set.function = &exercicio_1;
+    set.dimension = 1;
+    set.method = "forward_euler";
+    set.outfile = "./OUTPUT/test_forward.csv";
+    set.function = &exemplo_1;
 
     double *u1 = new double[set.dimension];
 
-    u1[0] = 2; u1[1] = 1.;
+    u1[0] = 1.;
     
     solver_to_file(set, u1);
 
+    // // referencia
+    // // forward euler
+    // set.method = "forward";
+    // set.outfile = "./OUTPUT/ref_forward.csv";
+
+    // solver_to_file(set, u1);
+
     delete[] u1;
-
-    // execicio 2
-    // Runge-Kutta 2/3
-    set.initial = 0.;
-    set.final = 20;
-    set.step = 0.1;
-    set.dimension = 1;
-    set.rk_tol = 1.e-3;
-    set.method = "rk23";
-    set.outfile = "./OUTPUT/exercicio2_RK_23_tol_3.csv";
-    set.function = &exercicio_2;
-
-    double *u2 = new double[set.dimension];
-
-    u2[0] = 1.;
-    
-    solver_to_file(set, u2);
-
-    delete[] u2;
-
-    // execicio 3
-    // Runge-Kutta 2/3
-    set.initial = 0.;
-    set.final = 20;
-    set.step = 0.1;
-    set.dimension = 1;
-    set.rk_tol = 1.e-4;
-    set.method = "rk23";
-    set.outfile = "./OUTPUT/exercicio2_RK_23_tol_4.csv";
-    set.function = &exercicio_2;
-
-    double *u3 = new double[set.dimension];
-
-    u3[0] = 1.;
-    
-    solver_to_file(set, u3);
-
-    delete[] u3;
     delete[] set.params;
 
     return 0;

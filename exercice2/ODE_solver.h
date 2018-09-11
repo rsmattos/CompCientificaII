@@ -1,6 +1,6 @@
 // class for the system of equaitons
 class ODE_solver{
-    private:
+    protected:
         // time params
         double time_;
         double t_limit_;
@@ -117,7 +117,7 @@ class ODE_solver{
         }
 
         // solvers
-        void forward_euler_step();
+        // void forward_euler_step();
 
         void backward_euler_step();
 
@@ -194,16 +194,16 @@ double distance(double *u, double *v, int dim){
     return sum;
 }
 
-inline void ODE_solver::forward_euler_step(){
-    system_(u_, der_u_, time_, params_);
+// inline void ODE_solver::forward_euler_step(){
+//     system_(u_, der_u_, time_, params_);
 
-    for(i_ = 0; i_ < dim_; i_++){
-        u_[i_] += step_size_*der_u_[i_];
-    }
+//     for(i_ = 0; i_ < dim_; i_++){
+//         u_[i_] += step_size_*der_u_[i_];
+//     }
 
-    time_ = time_ + step_size_;
-    step_counter_++;
-}
+//     time_ = time_ + step_size_;
+//     step_counter_++;
+// }
 
 inline void ODE_solver::backward_euler_step(){
     time_ = time_ + step_size_;
