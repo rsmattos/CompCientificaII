@@ -43,6 +43,9 @@ class ODE_solver{
         void file_CSV_print_system(std::ofstream&);
         void file_CSV_print_in_time(double, std::ofstream&);
         void file_CSV_print_in_step(int, std::ofstream&);
+        void file_DAT_print_system(std::ofstream&);
+        void file_DAT_print_in_time(double, std::ofstream&);
+        void file_DAT_print_in_step(int, std::ofstream&);
 
         // destructor
         ~ODE_solver(){
@@ -127,5 +130,25 @@ inline void ODE_solver::file_CSV_print_in_time(double t,std::ofstream &output){
 inline void ODE_solver::file_CSV_print_in_step(int step,std::ofstream &output){
     if( (step_counter_ % step) == 0){
         file_CSV_print_system(output);
+    }
+}
+
+inline void ODE_solver::file_DAT_print_system(std::ofstream &output){
+    output << time_;
+    for(i_ = 0; i_ < dim_; i_++){
+        output << '\t' << u_[i_]; 
+    }
+    output << std::endl;
+}
+
+inline void ODE_solver::file_DAT_print_in_time(double t,std::ofstream &output){
+    if( remainder(time_, t) < 1.e-5){
+        file_DAT_print_system(output);
+    }
+}
+
+inline void ODE_solver::file_DAT_print_in_step(int step,std::ofstream &output){
+    if( (step_counter_ % step) == 0){
+        file_DAT_print_system(output);
     }
 }
