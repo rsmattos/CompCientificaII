@@ -71,11 +71,11 @@ class ODE_solver{
         //     method[1] = 1;
         // }
 
-        void set_huen(){
-            extra_der_u_ = new double[dim_];
+        // void set_huen(){
+        //     extra_der_u_ = new double[dim_];
 
-            method[2] = 1;
-        }
+        //     method[2] = 1;
+        // }
 
         void set_kutta(){
             // set_backward();
@@ -119,7 +119,7 @@ class ODE_solver{
         // solvers
         // void cn_step();
 
-        void huen_step();
+        // void huen_step();
 
         void RK4_step();
 
@@ -192,22 +192,22 @@ class ODE_solver{
 //     }
 // }
 
-inline void ODE_solver::huen_step(){
-    // calculate fn
-    system_(u_, extra_der_u_, time_, params_);
+// inline void ODE_solver::huen_step(){
+//     // calculate fn
+//     system_(u_, extra_der_u_, time_, params_);
 
-    // calculate fn+1
-    time_ = time_ + step_size_;
+//     // calculate fn+1
+//     time_ = time_ + step_size_;
 
-    system_(u_, der_u_, time_, params_);
+//     system_(u_, der_u_, time_, params_);
 
-    // calculate huen step
-    for(i_ = 0; i_ < dim_; i_++){
-        u_[i_] = u_[i_] + step_size_*(extra_der_u_[i_] + der_u_[i_]) / 2.;
-    }
+//     // calculate huen step
+//     for(i_ = 0; i_ < dim_; i_++){
+//         u_[i_] = u_[i_] + step_size_*(extra_der_u_[i_] + der_u_[i_]) / 2.;
+//     }
 
-    step_counter_++;
-}
+//     step_counter_++;
+// }
 
 inline void ODE_solver::RK4_step(){
     // calc first k

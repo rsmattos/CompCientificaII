@@ -149,12 +149,18 @@ void solver_to_file(struct ODE_set &set, double *u){
             cn.file_CSV_print_system(output);
         }
     }
-    if(set.method == "huen"){
-        solver.set_huen();
 
-        while(solver.t() < solver.t_limit()){
-            solver.huen_step();
-            solver.file_CSV_print_system(output);
+    if(set.method == "heun"){
+        Heun heun(set.dimension);
+
+        heun.initial_values(u);
+        heun.set_time(set);
+
+        heun.set_system(set.function, set.params);
+
+        while(heun.t() < heun.t_limit()){
+            heun.heun_step();
+            heun.file_CSV_print_system(output);
         }
     }
 
