@@ -17,6 +17,8 @@ class Planet_Sys_RK4{
         void calc_energy();
         void print_positions();
         void print_energy();
+        void print_position_file(std::ofstream *output);
+        void print_energy_file(std::ofstream *output);
 
         // destructor
         ~Planet_Sys_RK4(){
@@ -67,7 +69,7 @@ inline void Planet_Sys_RK4::calc_energy(){
     V_ = 0.;
     K_ = 0.;
 
-    for(i_ = 0; i_ < p_->planets; i_++){
+    for(i_ = 1; i_ < p_->planets; i_++){
         V_ += -p_->G*p_->planet[0].get_mass()*p_->planet[i_].get_mass()/
         sqrt(p_->planet[i_].get_xx()*p_->planet[i_].get_xx() + 
              p_->planet[i_].get_xy()*p_->planet[i_].get_xy());
@@ -88,4 +90,14 @@ inline void Planet_Sys_RK4::print_positions(){
 
 inline void Planet_Sys_RK4::print_energy(){
     std::cout << days_ << '\t' << E_ << std::endl;
+}
+
+inline void Planet_Sys_RK4::print_position_file(std::ofstream *output){
+    for(i_ = 1; i_ < p_->planets; i_++){
+        output[i_] << p_->planet[i_].get_xx() << '\t' << p_->planet[i_].get_xy() << std::endl;
+    }
+}
+
+inline void Planet_Sys_RK4::print_energy_file(std::ofstream *output){
+    output[0] << days_ << '\t' << E_ << std::endl;
 }

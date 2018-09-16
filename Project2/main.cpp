@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <fstream>
+#include <sstream>
 #include <cstring>
 
 struct Params{
