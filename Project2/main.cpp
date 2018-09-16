@@ -20,12 +20,14 @@ struct ODE_set{
     func function;
 };
 
-#include "bodies.h"
 #include "../exercice2/ODE_solver.h"
 #include "../exercice2/RK4.h"
 #include "../exercice2/verlet.h"
+#include "bodies.h"
+#include "planet_sys_rk4.h"
 #include "function.h"
-#include "planetary_system.h"
+#include "solver.h"
+// #include "planetary_system.h"
 
 int main(){
     // setting planetay params
@@ -113,9 +115,9 @@ int main(){
     std::cout << "Verlet" << std::endl;
 
     // using verlet
-    set.function = &planetary2D_verlet;
+    // set.function = &planetary2D_verlet;
 
-    planetary_system_verlet(set, &p);
+    // planetary_system_verlet(set, &p);
 
     delete[] p.planet;
 }
