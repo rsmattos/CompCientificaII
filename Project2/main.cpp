@@ -25,7 +25,9 @@ struct ODE_set{
 #include "../exercice2/RK4.h"
 #include "../exercice2/verlet.h"
 #include "bodies.h"
+#include "planet_sys.h"
 #include "planet_sys_rk4.h"
+#include "planet_sys_verlet.h"
 #include "function.h"
 #include "solver.h"
 // #include "planetary_system.h"
@@ -106,19 +108,17 @@ int main(){
     struct ODE_set set;
 
     set.initial = 0.;
-    set.final = 20.;
+    set.final = 10000.;
     set.step = 2.;
     set.dimension = 2;
     set.function = &planetary2D;
 
-    planetary_system(set, &p);
-
-    std::cout << "Verlet" << std::endl;
+    planetary_system_rk4(set, &p);
 
     // using verlet
-    // set.function = &planetary2D_verlet;
+    set.function = &planetary2D_verlet;
 
-    // planetary_system_verlet(set, &p);
+    planetary_system_verlet(set, &p);
 
     delete[] p.planet;
 }
