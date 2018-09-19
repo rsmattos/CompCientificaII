@@ -7,6 +7,9 @@ void planetary_system_rk4(struct ODE_set set, struct Params *p){
     // open output files
     std::ofstream output[10];
 
+    std::ofstream pos;
+    pos.open("OUTPUT/rk4/positions.dat");
+
     std::string filename;
 
     output[0].open("OUTPUT/rk4/energy.dat");
@@ -23,12 +26,14 @@ void planetary_system_rk4(struct ODE_set set, struct Params *p){
     solar.set_solver(set, p);
 
     solar.print_position_file(output);
+    solar.print_position_single_file(pos);
     solar.calc_energy();
     solar.print_energy_file(output);
 
     for(i = 0; i < set.final; i+=2){
         solar.system_step();
         solar.print_position_file(output);
+        solar.print_position_single_file(pos);
         solar.calc_energy();
         solar.print_energy_file(output);
     }
@@ -37,6 +42,7 @@ void planetary_system_rk4(struct ODE_set set, struct Params *p){
     for(p->i = 0; p->i < p->planets; p->i++){
         output[p->i].close(); 
     }
+    pos.close();
 }
 
 void planetary_system_verlet(struct ODE_set set, struct Params *p){

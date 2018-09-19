@@ -36,15 +36,17 @@ inline void Planet_Sys_RK4::system_step(){
     for(p_->i = 1; p_->i < p_->planets; p_->i++){
         u_[0] = p_->planet[p_->i].get_xx();
         u_[1] = p_->planet[p_->i].get_xy();
-        u_[2] = p_->planet[p_->i].get_vx();
-        u_[3] = p_->planet[p_->i].get_vy();
+        u_[2] = p_->planet[p_->i].get_xz();    
+        u_[3] = p_->planet[p_->i].get_vx();
+        u_[4] = p_->planet[p_->i].get_vy();
+        u_[5] = p_->planet[p_->i].get_vz();
 
         solver_->initial_values(u_);
         solver_->rk4_step();
         solver_->get_variables(u_);
 
-        p_->planet[p_->i].new_position(u_[0], u_[1]);
-        p_->planet[p_->i].new_velocity(u_[2], u_[3]);
+        p_->planet[p_->i].new_position(u_[0], u_[1], u_[2]);
+        p_->planet[p_->i].new_velocity(u_[3], u_[4], u_[5]);
     }
 
     for(i_ = 0; i_ < p_->planets; i_++){

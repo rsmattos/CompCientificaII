@@ -14,6 +14,7 @@ class Planet_Sys{
         void print_positions();
         void print_energy();
         void print_position_file(std::ofstream *output);
+        void print_position_single_file(std::ofstream &positions);
         void print_energy_file(std::ofstream *output);
 
         // destructor
@@ -48,8 +49,16 @@ inline void Planet_Sys::print_energy(){
 
 inline void Planet_Sys::print_position_file(std::ofstream *output){
     for(i_ = 1; i_ < p_->planets; i_++){
-        output[i_] << days_ << '\t' << p_->planet[i_].get_xx() << '\t' << p_->planet[i_].get_xy() << std::endl;
+        output[i_] << days_ << '\t' << p_->planet[i_].get_xx() << '\t' << p_->planet[i_].get_xy() << '\t' << p_->planet[i_].get_xz() << std::endl;
     }
+}
+
+inline void Planet_Sys::print_position_single_file(std::ofstream &positions){
+    positions << days_;
+    for(i_ = 1; i_ < p_->planets; i_++){
+        positions << '\t' << p_->planet[i_].get_xx() << '\t' << p_->planet[i_].get_xy() << '\t' << p_->planet[i_].get_xz();
+    }
+    positions << std::endl;
 }
 
 inline void Planet_Sys::print_energy_file(std::ofstream *output){

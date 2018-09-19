@@ -38,15 +38,17 @@ inline void Planet_Sys_Verlet::system_step(){
     for(p_->i = 1; p_->i < p_->planets; p_->i++){
         u_[0] = p_->planet[p_->i].get_xx();
         u_[1] = p_->planet[p_->i].get_xy();
+        u_[2] = p_->planet[p_->i].get_xz();
         v_[0] = p_->planet[p_->i].get_vx();
         v_[1] = p_->planet[p_->i].get_vy();
+        v_[2] = p_->planet[p_->i].get_vz();
 
         solver_->initial_values(u_, v_);
         solver_->verlet_step();
         solver_->get_variables(u_);
 
-        p_->planet[p_->i].new_position(u_[0], u_[1]);
-        p_->planet[p_->i].new_velocity(v_[0], v_[1]);
+        p_->planet[p_->i].new_position(u_[0], u_[1], u_[2]);
+        p_->planet[p_->i].new_velocity(v_[0], v_[1], v_[2]);
     }
 
     for(i_ = 0; i_ < p_->planets; i_++){
