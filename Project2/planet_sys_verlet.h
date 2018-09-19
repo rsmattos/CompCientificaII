@@ -49,7 +49,7 @@ inline void Planet_Sys_Verlet::system_step(){
         p_->planet[p_->i].new_velocity(v_[0], v_[1]);
     }
 
-    for(i_ = 0; i_ < p_->planets; i_++){
+    for(i_ = 1; i_ < p_->planets; i_++){
         p_->planet[i_].update_positions();
         p_->planet[i_].update_velocities();
     }

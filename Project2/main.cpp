@@ -36,16 +36,16 @@ int main(){
     // setting planetay params
     struct Params p;
 
-    p.G = 4.98211e-7;
+    p.G = 4.98211e-7;    // pixel3/(Skg*day2)
     p.planets = 10;
 
     p.planet = new class Bodies[p.planets];
 
     // sun properties, it stays outside the position update loop
     p.planet[0].set_name("Sun");
-    p.planet[0].set_mass(1.989e6);
-    p.planet[0].set_position(600., 600.);
-    p.planet[0].set_velocity(0., 0.);
+    p.planet[0].set_mass(1.989e6);              // Skg
+    p.planet[0].set_position(600., 600.);       // pixel
+    p.planet[0].set_velocity(0., 0.);           // pixel/day
 
     // planet properties by planet
     // MERCURY

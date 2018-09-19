@@ -1,5 +1,5 @@
 void planetary_system_rk4(struct ODE_set set, struct Params *p){
-    int i;
+    double days;
 
     // open solver
     Planet_Sys_RK4 solar(set.dimension);
@@ -22,13 +22,15 @@ void planetary_system_rk4(struct ODE_set set, struct Params *p){
     // solve system
     solar.set_solver(set, p);
 
-    solar.print_position_file(output);
+    // solar.print_position_file(output);
+    solar.print_pos_vel_file(output);
     solar.calc_energy();
     solar.print_energy_file(output);
 
-    for(i = 0; i < set.final; i+=2){
+    for(days = 0; days < set.final; days+=set.step){
         solar.system_step();
-        solar.print_position_file(output);
+        // solar.print_position_file(output);
+        solar.print_pos_vel_file(output);
         solar.calc_energy();
         solar.print_energy_file(output);
     }

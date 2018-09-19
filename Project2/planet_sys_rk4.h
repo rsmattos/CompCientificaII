@@ -34,6 +34,8 @@ inline void Planet_Sys_RK4::set_solver(struct ODE_set set, struct Params *p){
 
 inline void Planet_Sys_RK4::system_step(){
     for(p_->i = 1; p_->i < p_->planets; p_->i++){
+        // std::cout << "atualizando posicao de " << p_->planet[p_->i].get_name() << std::endl;
+
         u_[0] = p_->planet[p_->i].get_xx();
         u_[1] = p_->planet[p_->i].get_xy();
         u_[2] = p_->planet[p_->i].get_vx();
@@ -47,7 +49,7 @@ inline void Planet_Sys_RK4::system_step(){
         p_->planet[p_->i].new_velocity(u_[2], u_[3]);
     }
 
-    for(i_ = 0; i_ < p_->planets; i_++){
+    for(i_ = 1; i_ < p_->planets; i_++){
         p_->planet[i_].update_positions();
         p_->planet[i_].update_velocities();
     }
