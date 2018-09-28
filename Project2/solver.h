@@ -5,7 +5,7 @@ void planetary_system_rk4(struct ODE_set set, struct Params *p){
     Planet_Sys_RK4 solar(set.dimension);
 
     // open output files
-    std::ofstream output[10];
+    std::ofstream output[p->planets];
 
     std::string filename;
 
@@ -48,7 +48,7 @@ void planetary_system_verlet(struct ODE_set set, struct Params *p){
     Planet_Sys_Verlet solar(set.dimension);
 
     // open output files
-    std::ofstream output[10];
+    std::ofstream output[p->planets];
 
     std::string filename;
 
