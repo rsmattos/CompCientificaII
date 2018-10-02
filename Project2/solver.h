@@ -68,6 +68,7 @@ void planetary_system_verlet(struct ODE_set set, struct Params *p){
     solar.print_position_file(output);
     solar.calc_energy();
     solar.print_energy_file(output);
+    solar.first_step();
 
     for(i = 0; i < set.final; i+=2){
         solar.system_step();

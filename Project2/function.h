@@ -1,5 +1,7 @@
 void planetary2D(double *u, double *du, double t, struct Params *p){
     int i;
+
+    double distance_sqr;
     
     du[0] = u[2];
     du[1] = u[3];
@@ -16,9 +18,18 @@ void planetary2D(double *u, double *du, double t, struct Params *p){
             continue;
         }
 
+        distance_sqr = (p->planet[i].get_xx() - u[0])*(p->planet[i].get_xx() - u[0]) +
+                       (p->planet[i].get_xy() - u[1])*(p->planet[i].get_xy() - u[1]);
+
         du[2] += p->planet[i].get_mass()*(p->planet[i].get_xx() - u[0])/
-      fabs(pow( (p->planet[i].get_xx() - u[0])*(p->planet[i].get_xx() - u[0]) +
-                (p->planet[i].get_xy() - u[1])*(p->planet[i].get_xy() - u[1]) , 1.5));
+                 (distance_sqr*sqrt(distance_sqr));
+
+        du[3] += p->planet[i].get_mass()*(p->planet[i].get_xy() - u[1])/
+                 (distance_sqr*sqrt(distance_sqr));
+
+        // du[2] += p->planet[i].get_mass()*(p->planet[i].get_xx() - u[0])/
+        //    pow( (p->planet[i].get_xx() - u[0])*(p->planet[i].get_xx() - u[0]) +
+        //         (p->planet[i].get_xy() - u[1])*(p->planet[i].get_xy() - u[1]) , 1.5);
 
         // std::cout << "comparando com " << p->planet[i].get_name() << std::endl;
         // std::cout << p->planet[i].get_xx() << std::endl;
@@ -28,9 +39,9 @@ void planetary2D(double *u, double *du, double t, struct Params *p){
         // std::cout << p->planet[i].get_xx() - u[0] << std::endl;
         // std::cout << p->planet[i].get_xy() - u[1] << std::endl;
 
-        du[3] += p->planet[i].get_mass()*(p->planet[i].get_xy() - u[1])/
-      fabs(pow( (p->planet[i].get_xx() - u[0])*(p->planet[i].get_xx() - u[0]) +
-                (p->planet[i].get_xy() - u[1])*(p->planet[i].get_xy() - u[1]) , 1.5));
+        // du[3] += p->planet[i].get_mass()*(p->planet[i].get_xy() - u[1])/
+        //    pow( (p->planet[i].get_xx() - u[0])*(p->planet[i].get_xx() - u[0]) +
+        //         (p->planet[i].get_xy() - u[1])*(p->planet[i].get_xy() - u[1]) , 1.5);
     }
 
     du[2] = p->G*du[2];
@@ -47,6 +58,7 @@ void planetary2D(double *u, double *du, double t, struct Params *p){
 }
 
 void planetary2D_verlet(double *u, double *du, double t, struct Params *p){
+    double distance_sqr;
     int i;
 
     du[0] = 0.;
@@ -56,13 +68,23 @@ void planetary2D_verlet(double *u, double *du, double t, struct Params *p){
         if(i == p->i){
             continue;
         }
+
+        distance_sqr = (p->planet[i].get_xx() - u[0])*(p->planet[i].get_xx() - u[0]) +
+                       (p->planet[i].get_xy() - u[1])*(p->planet[i].get_xy() - u[1]);
+
         du[0] += p->planet[i].get_mass()*(p->planet[i].get_xx() - u[0])/
-      fabs(pow( (p->planet[i].get_xx() - u[0])*(p->planet[i].get_xx() - u[0]) +
-                (p->planet[i].get_xy() - u[1])*(p->planet[i].get_xy() - u[1]) , 1.5));
+                 (distance_sqr*sqrt(distance_sqr));
 
         du[1] += p->planet[i].get_mass()*(p->planet[i].get_xy() - u[1])/
-      fabs(pow( (p->planet[i].get_xx() - u[0])*(p->planet[i].get_xx() - u[0]) +
-                (p->planet[i].get_xy() - u[1])*(p->planet[i].get_xy() - u[1]) , 1.5));
+                 (distance_sqr*sqrt(distance_sqr));
+
+        // du[0] += p->planet[i].get_mass()*(p->planet[i].get_xx() - u[0])/
+        //    pow( (p->planet[i].get_xx() - u[0])*(p->planet[i].get_xx() - u[0]) +
+        //         (p->planet[i].get_xy() - u[1])*(p->planet[i].get_xy() - u[1]) , 1.5);
+
+        // du[1] += p->planet[i].get_mass()*(p->planet[i].get_xy() - u[1])/
+        //    pow( (p->planet[i].get_xx() - u[0])*(p->planet[i].get_xx() - u[0]) +
+        //         (p->planet[i].get_xy() - u[1])*(p->planet[i].get_xy() - u[1]) , 1.5);
     }
 
     du[0] = p->G*du[0];

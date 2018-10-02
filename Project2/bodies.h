@@ -2,6 +2,7 @@ class Bodies{
     private:
         // potition
         double x_[2];
+        double old_x_[2];
         double next_x_[2];
         // velocity
         double v_[2];
@@ -33,6 +34,8 @@ class Bodies{
         // get values
         double get_xx(){return x_[0];}
         double get_xy(){return x_[1];}
+        double get_old_xx(){return old_x_[0];}
+        double get_old_xy(){return old_x_[1];}
         double get_vx(){return v_[0];}
         double get_vy(){return v_[1];}
         double get_mass(){return m_;}
@@ -76,6 +79,9 @@ inline void Bodies::new_velocity(double vx, double vy){
 }
 
 inline void Bodies::update_positions(){
+    old_x_[0] = x_[0];
+    old_x_[1] = x_[1];
+
     x_[0] = next_x_[0];
     x_[1] = next_x_[1];
 }

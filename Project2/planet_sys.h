@@ -2,8 +2,11 @@ class Planet_Sys{
     protected:
         double E_, V_, K_;
         double days_, time_step_;
+        double dist_;
+        typedef void (*fptr)(double *u, double *du, double t, struct Params *params);
+        fptr system_;
         struct Params *p_;
-        int i_;
+        int i_, j_;
 
     public:
         // constructor
@@ -25,10 +28,18 @@ inline void Planet_Sys::calc_energy(){
     K_ = 0.;
 
     for(i_ = 1; i_ < p_->planets; i_++){
-        V_ += -p_->G*p_->planet[0].get_mass()*p_->planet[i_].get_mass()/
-        sqrt(p_->planet[i_].get_xx()*p_->planet[i_].get_xx() + 
-             p_->planet[i_].get_xy()*p_->planet[i_].get_xy());
+        for(j_ = 1; j_ < p_->planets; j_++){
+            if(i_ == j_){
+                continue;
+            }
+            // calculate the distance between any two bodies
+            dist_ = sqrt( (p_->planet[i_].get_xx() - p_->planet[j_].get_xx())*(p_->planet[i_].get_xx() - p_->planet[j_].get_xx()) + 
+                          (p_->planet[i_].get_xy() - p_->planet[j_].get_xy())*(p_->planet[i_].get_xy() - p_->planet[j_].get_xy()) );
 
+            // calculates the potential energy in i_ by the other j_ bodies
+            V_ += -p_->G*p_->planet[j_].get_mass()/(dist_);
+        }
+        // kinetic energy (mv**2)/2
         K_ += p_->planet[i_].get_mass()*
              (p_->planet[i_].get_vx()*p_->planet[i_].get_vx() + 
               p_->planet[i_].get_vy()*p_->planet[i_].get_vy())/2.;
